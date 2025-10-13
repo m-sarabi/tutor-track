@@ -16,6 +16,7 @@ import {
     where,
     onSnapshot,
     doc,
+    setDoc,
     getDoc,
     updateDoc,
     arrayUnion,
@@ -37,11 +38,11 @@ onAuthStateChanged(auth, (user) => {
 const handleSignUp = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Create user doc in Firestore
-        await addDoc(collection(db, "users"), {
-            uid: userCredential.user.uid,
-            email: userCredential.user.email,
-            name: userCredential.user.displayName || 'New Tutor',
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+            email: user.email,
+            name: user.displayName || 'New Tutor',
             createdAt: Timestamp.now()
         });
     } catch (error) {
