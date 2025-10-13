@@ -1,14 +1,14 @@
 const BASE_PATH = '/tutor-track';
 
-import { auth, db } from './firebase-config.js';
+import {auth, db} from './firebase-config.js';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signInWithPopup,
     GoogleAuthProvider,
     signOut,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    onAuthStateChanged,
+} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {
     collection,
     addDoc,
@@ -20,10 +20,9 @@ import {
     getDoc,
     updateDoc,
     arrayUnion,
-    arrayRemove,
     Timestamp,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+    orderBy,
+} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const appContainer = document.getElementById('app');
 let currentUser = null;
@@ -40,10 +39,10 @@ const handleSignUp = async (email, password) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(db, 'users', user.uid), {
             email: user.email,
             name: user.displayName || 'New Tutor',
-            createdAt: Timestamp.now()
+            createdAt: Timestamp.now(),
         });
     } catch (error) {
         alert(`Sign up failed: ${error.message}`);
@@ -72,7 +71,7 @@ const routes = {
     '/': 'dashboard',
     '/login': 'login',
     '/signup': 'signup',
-    '/student/:id': 'studentDetail'
+    '/student/:id': 'studentDetail',
 };
 
 const navigateTo = (path) => {
@@ -219,7 +218,7 @@ window.renderDashboardPage = () => {
     `;
 
     // Fetch and display students
-    const q = query(collection(db, "students"), where("tutorId", "==", currentUser.uid), where("status", "==", "Active"));
+    const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', 'Active'));
     onSnapshot(q, (querySnapshot) => {
         const studentsList = document.getElementById('students-list');
         if (querySnapshot.empty) {
@@ -228,7 +227,7 @@ window.renderDashboardPage = () => {
         }
         studentsList.innerHTML = ''; // Clear list
         querySnapshot.forEach((doc) => {
-            const student = { id: doc.id, ...doc.data() };
+            const student = {id: doc.id, ...doc.data()};
             const studentCard = document.createElement('div');
             studentCard.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl cursor-pointer';
             studentCard.dataset.id = student.id;
@@ -253,7 +252,7 @@ window.renderStudentDetailPage = async (studentId) => {
     appContainer.innerHTML = `<p class="text-center mt-10">Loading student details...</p>`;
 
     try {
-        const studentRef = doc(db, "students", studentId);
+        const studentRef = doc(db, 'students', studentId);
         const studentSnap = await getDoc(studentRef);
 
         if (!studentSnap.exists() || studentSnap.data().tutorId !== currentUser.uid) {
@@ -261,7 +260,7 @@ window.renderStudentDetailPage = async (studentId) => {
             return;
         }
 
-        const student = { id: studentSnap.id, ...studentSnap.data() };
+        const student = {id: studentSnap.id, ...studentSnap.data()};
 
         // Render the main page structure
         appContainer.innerHTML = `
@@ -313,7 +312,12 @@ window.renderStudentDetailPage = async (studentId) => {
         `;
 
         // Fetch and render sessions
-        const sessionsQuery = query(collection(db, "sessions"), where("studentId", "==", studentId), orderBy("date", "desc"));
+        const sessionsQuery = query(
+            collection(db, 'sessions'),
+            where('studentId', '==', studentId),
+            where('tutorId', '==', currentUser.uid),
+            orderBy('date', 'desc'),
+        );
         onSnapshot(sessionsQuery, (querySnapshot) => {
             const sessionLogList = document.getElementById('session-log-list');
             if (querySnapshot.empty) {
@@ -321,7 +325,7 @@ window.renderStudentDetailPage = async (studentId) => {
                 return;
             }
             sessionLogList.innerHTML = querySnapshot.docs.map(doc => {
-                const session = { id: doc.id, ...doc.data() };
+                const session = {id: doc.id, ...doc.data()};
                 const topicsCovered = (session.topicsCoveredIds || [])
                     .map(topicId => (student.syllabus || []).find(t => t.id === topicId)?.title)
                     .filter(Boolean)
@@ -339,7 +343,7 @@ window.renderStudentDetailPage = async (studentId) => {
         });
 
     } catch (error) {
-        console.error("Error rendering student page:", error);
+        console.error('Error rendering student page:', error);
         appContainer.innerHTML = `<h1>Something went wrong.</h1>`;
     }
 };
@@ -411,11 +415,11 @@ const showAddStudentModal = () => {
 
 const showLogSessionForm = async () => {
     const studentId = window.location.pathname.split('/')[2];
-    const studentRef = doc(db, "students", studentId);
+    const studentRef = doc(db, 'students', studentId);
     const studentSnap = await getDoc(studentRef);
     const student = studentSnap.data();
     const syllabusOptions = (student.syllabus || []).map(topic =>
-        `<label class="flex items-center"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`
+        `<label class="flex items-center"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`,
     ).join('');
 
     const content = `
@@ -495,40 +499,40 @@ document.addEventListener('click', async (e) => {
 
     if (action === 'edit-student') {
         const studentId = e.target.closest('[data-id]').dataset.id;
-        const studentRef = doc(db, "students", studentId);
+        const studentRef = doc(db, 'students', studentId);
         try {
             const studentSnap = await getDoc(studentRef);
             if (studentSnap.exists()) {
-                showEditStudentModal({ id: studentSnap.id, ...studentSnap.data() });
+                showEditStudentModal({id: studentSnap.id, ...studentSnap.data()});
             } else {
-                alert("Error: Student data could not be found.");
+                alert('Error: Student data could not be found.');
             }
         } catch (error) {
-            console.error("Error fetching student for edit:", error);
-            alert("Could not fetch student details. Please try again.");
+            console.error('Error fetching student for edit:', error);
+            alert('Could not fetch student details. Please try again.');
         }
     }
 
     if (action === 'archive-student') {
         if (confirm('Are you sure you want to archive this student?')) {
             const studentId = e.target.dataset.id;
-            const studentRef = doc(db, "students", studentId);
-            await updateDoc(studentRef, { status: 'Archived' });
+            const studentRef = doc(db, 'students', studentId);
+            await updateDoc(studentRef, {status: 'Archived'});
             navigateTo('/');
         }
     }
 
     if (action === 'update-topic-status') {
-        const { studentId, topicId, status } = e.target.closest('[data-action]').dataset;
-        const studentRef = doc(db, "students", studentId);
+        const {studentId, topicId, status} = e.target.closest('[data-action]').dataset;
+        const studentRef = doc(db, 'students', studentId);
         const studentSnap = await getDoc(studentRef);
         const student = studentSnap.data();
 
         const updatedSyllabus = student.syllabus.map(topic =>
-            topic.id === topicId ? { ...topic, status: status } : topic
+            topic.id === topicId ? {...topic, status: status} : topic,
         );
 
-        await updateDoc(studentRef, { syllabus: updatedSyllabus });
+        await updateDoc(studentRef, {syllabus: updatedSyllabus});
     }
 });
 
@@ -559,7 +563,7 @@ document.addEventListener('submit', async (e) => {
             dates: formData.getAll('dates').filter(d => d).map(d => new Date(d).toISOString()),
             tutorId: currentUser.uid,
             status: 'Active',
-            syllabus: []
+            syllabus: [],
         };
         await addDoc(collection(db, 'students'), studentData);
         closeModal();
@@ -570,7 +574,7 @@ document.addEventListener('submit', async (e) => {
         const studentId = e.target.dataset.id;
         if (!studentId) return;
 
-        const studentRef = doc(db, "students", studentId);
+        const studentRef = doc(db, 'students', studentId);
         const formData = new FormData(e.target);
 
         const updatedData = {
@@ -587,8 +591,8 @@ document.addEventListener('submit', async (e) => {
             // After updating, re-render the detail page to show the new data
             renderStudentDetailPage(studentId);
         } catch (error) {
-            console.error("Error updating student:", error);
-            alert("Failed to update student. Please try again.");
+            console.error('Error updating student:', error);
+            alert('Failed to update student. Please try again.');
         }
     }
 
@@ -597,13 +601,13 @@ document.addEventListener('submit', async (e) => {
         const studentId = window.location.pathname.split('/')[2];
         const title = e.target.querySelector('#new-topic-title').value;
         if (title) {
-            const studentRef = doc(db, "students", studentId);
+            const studentRef = doc(db, 'students', studentId);
             await updateDoc(studentRef, {
                 syllabus: arrayUnion({
                     id: crypto.randomUUID(), // Simple UUID for topics
                     title: title,
-                    status: 'Not Started'
-                })
+                    status: 'Not Started',
+                }),
             });
             e.target.reset();
         }
@@ -620,7 +624,7 @@ document.addEventListener('submit', async (e) => {
             duration: Number(formData.get('duration')),
             notes: formData.get('notes'),
             nextSteps: formData.get('nextSteps'),
-            topicsCoveredIds: formData.getAll('topics')
+            topicsCoveredIds: formData.getAll('topics'),
         };
         await addDoc(collection(db, 'sessions'), sessionData);
         closeModal();
