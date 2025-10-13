@@ -448,6 +448,34 @@ const showLogSessionForm = async () => {
     showModal('Log New Session', content);
 };
 
+const showEditStudentModal = (student) => {
+    // Note: Editing multiple datetime-local inputs is tricky.
+    // For this minimalist app, we'll ask the user to re-select all dates.
+    const content = `
+        <form id="edit-student-form" data-id="${student.id}">
+            <div class="mb-4">
+                <label class="block text-gray-700">Student Name</label>
+                <input type="text" name="name" class="w-full p-2 border rounded" value="${student.name}" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Subject</label>
+                <input type="text" name="subject" class="w-full p-2 border rounded" value="${student.subject}" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Contact Info (Optional)</label>
+                <input type="text" name="contact" class="w-full p-2 border rounded" value="${student.contact || ''}">
+            </div>
+             <div class="mb-4">
+                <label class="block text-gray-700">Scheduled Dates (Optional)</label>
+                <input type="datetime-local" name="dates" class="w-full p-2 border rounded" multiple>
+                 <small class="text-gray-500">Current dates will be replaced. Please re-select all desired dates.</small>
+            </div>
+            <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Save Changes</button>
+        </form>
+    `;
+    showModal('Edit Student Details', content);
+};
+
 
 // --- EVENT LISTENERS (using event delegation) --- //
 
@@ -464,6 +492,22 @@ document.addEventListener('click', async (e) => {
     if (e.target.id === 'add-student-btn') showAddStudentModal();
     if (action === 'close-modal') closeModal();
     if (action === 'show-log-session-form') showLogSessionForm();
+
+    if (action === 'edit-student') {
+        const studentId = e.target.closest('[data-id]').dataset.id;
+        const studentRef = doc(db, "students", studentId);
+        try {
+            const studentSnap = await getDoc(studentRef);
+            if (studentSnap.exists()) {
+                showEditStudentModal({ id: studentSnap.id, ...studentSnap.data() });
+            } else {
+                alert("Error: Student data could not be found.");
+            }
+        } catch (error) {
+            console.error("Error fetching student for edit:", error);
+            alert("Could not fetch student details. Please try again.");
+        }
+    }
 
     if (action === 'archive-student') {
         if (confirm('Are you sure you want to archive this student?')) {
@@ -519,6 +563,33 @@ document.addEventListener('submit', async (e) => {
         };
         await addDoc(collection(db, 'students'), studentData);
         closeModal();
+    }
+
+    // Edit Student
+    if (e.target.id === 'edit-student-form') {
+        const studentId = e.target.dataset.id;
+        if (!studentId) return;
+
+        const studentRef = doc(db, "students", studentId);
+        const formData = new FormData(e.target);
+
+        const updatedData = {
+            name: formData.get('name'),
+            subject: formData.get('subject'),
+            contact: formData.get('contact'),
+            // This will replace the entire dates array with the new selection
+            dates: formData.getAll('dates').filter(d => d).map(d => new Date(d).toISOString()),
+        };
+
+        try {
+            await updateDoc(studentRef, updatedData);
+            closeModal();
+            // After updating, re-render the detail page to show the new data
+            renderStudentDetailPage(studentId);
+        } catch (error) {
+            console.error("Error updating student:", error);
+            alert("Failed to update student. Please try again.");
+        }
     }
 
     // Add Syllabus Topic
