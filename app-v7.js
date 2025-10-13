@@ -32,6 +32,7 @@ import {
     arrayUnion,
     Timestamp,
     orderBy,
+    deleteDoc, // ADDED: Import deleteDoc function
 } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const appContainer = document.getElementById('app');
@@ -364,7 +365,12 @@ const renderStudentDetailPage = async (studentId) => {
 
                     return `
                     <div class="border-b pb-4">
-                        <p class="font-bold">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
+                        <div class="flex justify-between items-start">
+                             <div>
+                                <p class="font-bold">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
+                             </div>
+                             <button data-action="delete-session" data-session-id="${session.id}" class="text-red-500 hover:text-red-700 font-bold text-2xl">&times;</button>
+                        </div>
                         <p class="text-sm mt-2"><strong class="font-semibold">Notes:</strong> ${session.notes}</p>
                         <p class="text-sm mt-1"><strong class="font-semibold">Next Steps:</strong> ${session.nextSteps}</p>
                         <p class="text-sm mt-1"><strong class="font-semibold">Topics:</strong> ${topicsCovered || 'None'}</p>
@@ -386,11 +392,12 @@ const renderSyllabus = (syllabus, studentId) => {
     }
     return syllabus.map(topic => `
         <li class="flex justify-between items-center p-2 rounded hover:bg-gray-50">
-            <span>${topic.title}</span>
-            <div class="flex items-center space-x-1">
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200'}">Not Started</button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-100'}">In Progress</button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-100'}">Completed</button>
+            <span class="flex-grow">${topic.title}</span>
+            <div class="flex items-center space-x-1 flex-shrink-0 ml-4">
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200 opacity-50'}">Not Started</button>
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-100 opacity-50'}">In Progress</button>
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-100 opacity-50'}">Completed</button>
+                <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
             </div>
         </li>
     `).join('');
@@ -404,7 +411,7 @@ const showModal = (title, content) => {
         <div class="modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold">${title}</h2>
-                <button data-action="close-modal" class="text-gray-500 hover:text-gray-800">&times;</button>
+                <button data-action="close-modal" class="text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             </div>
             ${content}
         </div>
@@ -513,7 +520,10 @@ const showEditStudentModal = (student) => {
 // --- EVENT LISTENERS (using event delegation) --- //
 
 document.addEventListener('click', async (e) => {
-    const action = e.target.dataset.action || e.target.closest('[data-action]')?.dataset.action;
+    const target = e.target.closest('[data-action]');
+    if (!target && !e.target.matches('[data-link]') && !e.target.id) return;
+
+    const action = target?.dataset.action;
 
     if (e.target.matches('[data-link]')) {
         e.preventDefault();
@@ -526,7 +536,7 @@ document.addEventListener('click', async (e) => {
     if (action === 'close-modal') closeModal();
 
     if (action === 'edit-student') {
-        const studentId = e.target.closest('[data-id]').dataset.id;
+        const studentId = target.closest('[data-id]').dataset.id;
         const studentRef = doc(db, 'students', studentId);
         try {
             const studentSnap = await getDoc(studentRef);
@@ -543,7 +553,7 @@ document.addEventListener('click', async (e) => {
 
     if (action === 'archive-student') {
         if (confirm('Are you sure you want to archive this student?')) {
-            const studentId = e.target.dataset.id;
+            const studentId = target.dataset.id;
             const studentRef = doc(db, 'students', studentId);
             await updateDoc(studentRef, {status: STATUS.ARCHIVED});
             navigateTo('/');
@@ -551,7 +561,7 @@ document.addEventListener('click', async (e) => {
     }
 
     if (action === 'update-topic-status') {
-        const {studentId, topicId, status} = e.target.closest('[data-action]').dataset;
+        const {studentId, topicId, status} = target.dataset;
         const studentRef = doc(db, 'students', studentId);
         const studentSnap = await getDoc(studentRef);
         const student = studentSnap.data();
@@ -561,6 +571,40 @@ document.addEventListener('click', async (e) => {
         );
 
         await updateDoc(studentRef, {syllabus: updatedSyllabus});
+    }
+
+    // deleting a syllabus topic
+    if (action === 'delete-topic') {
+        if (confirm('Are you sure you want to delete this topic?')) {
+            const {studentId, topicId} = target.dataset;
+            const studentRef = doc(db, 'students', studentId);
+            try {
+                const studentSnap = await getDoc(studentRef);
+                const student = studentSnap.data();
+
+                // Filter out the topic to be deleted
+                const updatedSyllabus = student.syllabus.filter(topic => topic.id !== topicId);
+
+                await updateDoc(studentRef, {syllabus: updatedSyllabus});
+            } catch (error) {
+                console.error('Error deleting topic: ', error);
+                alert('Failed to delete topic.');
+            }
+        }
+    }
+
+    // deleting a session log
+    if (action === 'delete-session') {
+        if (confirm('Are you sure you want to delete this session log?')) {
+            const {sessionId} = target.dataset;
+            const sessionRef = doc(db, 'sessions', sessionId);
+            try {
+                await deleteDoc(sessionRef);
+            } catch (error) {
+                console.error('Error deleting session: ', error);
+                alert('Failed to delete session log.');
+            }
+        }
     }
 });
 
