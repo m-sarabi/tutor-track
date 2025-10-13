@@ -301,7 +301,7 @@ window.renderStudentDetailPage = async (studentId) => {
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-xl font-semibold">Session Log</h3>
-                            <button data-action="show-log-session-form" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">+ Log Session</button>
+                            <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">+ Log Session</button>
                         </div>
                         <div id="session-log-list" class="space-y-4">
                             <!-- Session entries will be loaded here -->
@@ -310,6 +310,10 @@ window.renderStudentDetailPage = async (studentId) => {
                 </div>
             </main>
         `;
+
+        document.getElementById('log-session-btn').addEventListener('click', () => {
+            showLogSessionForm(student);
+        });
 
         // Fetch and render sessions
         const sessionsQuery = query(
@@ -413,11 +417,8 @@ const showAddStudentModal = () => {
     showModal('Add New Student', content);
 };
 
-const showLogSessionForm = async () => {
-    const studentId = window.location.pathname.split('/')[3];
-    const studentRef = doc(db, 'students', studentId);
-    const studentSnap = await getDoc(studentRef);
-    const student = studentSnap.data();
+const showLogSessionForm = (student) => {
+    const studentId = student.id;
     const syllabusOptions = (student.syllabus || []).map(topic =>
         `<label class="flex items-center"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`,
     ).join('');
@@ -495,7 +496,6 @@ document.addEventListener('click', async (e) => {
     if (e.target.id === 'google-signin-btn') handleGoogleSignIn();
     if (e.target.id === 'add-student-btn') showAddStudentModal();
     if (action === 'close-modal') closeModal();
-    if (action === 'show-log-session-form') showLogSessionForm();
 
     if (action === 'edit-student') {
         const studentId = e.target.closest('[data-id]').dataset.id;
