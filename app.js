@@ -1,3 +1,5 @@
+const BASE_PATH = '/tutor-track';
+
 import { auth, db } from './firebase-config.js';
 import {
     createUserWithEmailAndPassword,
@@ -73,12 +75,22 @@ const routes = {
 };
 
 const navigateTo = (path) => {
-    window.history.pushState({}, path, window.location.origin + path);
+    // Make sure the path starts with a slash
+    const fullPath = `${BASE_PATH}${path.startsWith('/') ? '' : '/'}${path}`;
+    window.history.pushState({}, path, window.location.origin + fullPath);
     handleRouteChange();
 };
 
 const handleRouteChange = () => {
-    const path = window.location.pathname;
+    // Get the pathname and remove the base path to get the app-specific route
+    let path = window.location.pathname.startsWith(BASE_PATH)
+        ? window.location.pathname.substring(BASE_PATH.length)
+        : window.location.pathname;
+
+    // If the path is empty after stripping the base, it's the root route
+    if (path === '') {
+        path = '/';
+    }
 
     // Protected routes
     if (!currentUser && path !== '/login' && path !== '/signup') {
@@ -541,4 +553,23 @@ document.addEventListener('submit', async (e) => {
         await addDoc(collection(db, 'sessions'), sessionData);
         closeModal();
     }
+});
+
+// Initial Load Handler
+document.addEventListener('DOMContentLoaded', () => {
+    // This handles the redirect from 404.html
+    const redirectedPath = sessionStorage.getItem('redirect');
+    if (redirectedPath) {
+        sessionStorage.removeItem('redirect');
+        // Parse the path from the stored URL
+        const url = new URL(redirectedPath);
+        const path = url.searchParams.get('path');
+        if (path) {
+            navigateTo(path);
+            return;
+        }
+    }
+
+    // Otherwise, handle the route normally on first load
+    handleRouteChange();
 });

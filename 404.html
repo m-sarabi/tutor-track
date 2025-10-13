@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutorTrack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Start of GitHub Pages SPA Redirect -->
+    <script>
+        // Set the base path to your repository name
+        const basePath = '/tutor-track';
+        const path = window.location.pathname;
+
+        // Check if the current path is not the root of the sub-directory
+        if (path.startsWith(basePath) && path !== basePath && path !== basePath + '/') {
+            // Construct the redirect URL
+            const redirect = window.location.protocol + '//' + window.location.host + basePath + '/?path=' + encodeURIComponent(path.substring(basePath.length));
+
+            // Use sessionStorage to prevent an infinite redirect loop
+            sessionStorage.setItem('redirect', redirect);
+
+            // Redirect to the index.html page
+            window.location.replace(window.location.protocol + '//' + window.location.host + basePath + '/');
+        }
+    </script>
+    <!-- End of GitHub Pages SPA Redirect -->
+
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div id="app" class="min-h-screen">
+    <div class="flex items-center justify-center h-screen">
+        <p class="text-gray-500">Loading TutorTrack...</p>
+    </div>
+</div>
+
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
