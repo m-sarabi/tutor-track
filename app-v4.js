@@ -414,7 +414,7 @@ const showAddStudentModal = () => {
 };
 
 const showLogSessionForm = async () => {
-    const studentId = window.location.pathname.split('/')[2];
+    const studentId = window.location.pathname.split('/')[3];
     const studentRef = doc(db, 'students', studentId);
     const studentSnap = await getDoc(studentRef);
     const student = studentSnap.data();
@@ -598,7 +598,7 @@ document.addEventListener('submit', async (e) => {
 
     // Add Syllabus Topic
     if (e.target.id === 'add-topic-form') {
-        const studentId = window.location.pathname.split('/')[2];
+        const studentId = window.location.pathname.split('/')[3];
         const title = e.target.querySelector('#new-topic-title').value;
         if (title) {
             const studentRef = doc(db, 'students', studentId);
