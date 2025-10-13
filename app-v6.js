@@ -1,4 +1,14 @@
 const BASE_PATH = '/tutor-track';
+const STATUS = {
+    ACTIVE: 'Active',
+    ARCHIVED: 'Archived',
+};
+const TOPIC_STATUS = {
+    NOT_STARTED: 'Not Started',
+    IN_PROGRESS: 'In Progress',
+    COMPLETED: 'Completed',
+};
+
 
 import {auth, db} from './firebase-config.js';
 import {
@@ -103,12 +113,18 @@ const handleRouteChange = () => {
         return;
     }
 
+    const pageRenderers = {
+        dashboard: renderDashboardPage,
+        login: renderLoginPage,
+        signup: renderSignupPage,
+        // studentDetail is handled separately
+    };
+
     if (path.startsWith('/student/')) {
         const studentId = path.split('/')[2];
         renderStudentDetailPage(studentId);
-    } else if (routes[path]) {
-        const pageRenderer = `render${routes[path].charAt(0).toUpperCase() + routes[path].slice(1)}Page`;
-        window[pageRenderer](); // Dynamically call render function
+    } else if (routes[path] && pageRenderers[routes[path]]) {
+        pageRenderers[routes[path]](); // Dynamically call render function
     } else {
         appContainer.innerHTML = '<h1>404 - Not Found</h1>';
     }
@@ -120,7 +136,7 @@ window.onpopstate = handleRouteChange;
 // --- UI RENDERING --- //
 
 // Render Login Page
-window.renderLoginPage = () => {
+const renderLoginPage = () => {
     appContainer.innerHTML = `
         <div class="flex items-center justify-center min-h-screen bg-gray-100">
             <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
@@ -163,7 +179,7 @@ window.renderLoginPage = () => {
 };
 
 // Render Sign Up Page
-window.renderSignupPage = () => {
+const renderSignupPage = () => {
     appContainer.innerHTML = `
        <div class="flex items-center justify-center min-h-screen bg-gray-100">
             <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
@@ -194,7 +210,7 @@ window.renderSignupPage = () => {
 };
 
 // Render Dashboard
-window.renderDashboardPage = () => {
+const renderDashboardPage = () => {
     appContainer.innerHTML = `
         <header class="bg-white shadow-md">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -218,37 +234,39 @@ window.renderDashboardPage = () => {
     `;
 
     // Fetch and display students
-    const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', 'Active'));
+    const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', STATUS.ACTIVE));
     onSnapshot(q, (querySnapshot) => {
         const studentsList = document.getElementById('students-list');
-        if (querySnapshot.empty) {
-            studentsList.innerHTML = `<p class="text-gray-500">You haven't added any students yet. Click "Add Student" to get started!</p>`;
-            return;
-        }
-        studentsList.innerHTML = ''; // Clear list
-        querySnapshot.forEach((doc) => {
-            const student = {id: doc.id, ...doc.data()};
-            const studentCard = document.createElement('div');
-            studentCard.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl cursor-pointer';
-            studentCard.dataset.id = student.id;
-            studentCard.innerHTML = `
+        if (studentsList) {
+            if (querySnapshot.empty) {
+                studentsList.innerHTML = `<p class="text-gray-500">You haven't added any students yet. Click "Add Student" to get started!</p>`;
+                return;
+            }
+            studentsList.innerHTML = ''; // Clear list
+            querySnapshot.forEach((doc) => {
+                const student = {id: doc.id, ...doc.data()};
+                const studentCard = document.createElement('div');
+                studentCard.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl cursor-pointer';
+                studentCard.dataset.id = student.id;
+                studentCard.innerHTML = `
                 <h3 class="text-xl font-bold text-gray-800">${student.name}</h3>
                 <p class="text-gray-600">${student.subject}</p>
                 <div class="mt-4">
                     <h4 class="text-sm font-semibold text-gray-500 uppercase">Upcoming Sessions</h4>
                     ${student.dates && student.dates.length > 0
-                ? `<p class="text-gray-700">${student.dates.slice(0, 2).map(d => new Date(d).toLocaleString()).join('<br>')}</p>`
-                : `<p class="text-gray-500 text-sm">No upcoming sessions scheduled.</p>`}
+                    ? `<p class="text-gray-700">${student.dates.slice(0, 2).map(d => new Date(d).toLocaleString()).join('<br>')}</p>`
+                    : `<p class="text-gray-500 text-sm">No upcoming sessions scheduled.</p>`}
                 </div>
             `;
-            studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
-            studentsList.appendChild(studentCard);
-        });
+                studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
+                studentsList.appendChild(studentCard);
+            });
+        }
     });
 };
 
 // Render Student Detail Page
-window.renderStudentDetailPage = async (studentId) => {
+const renderStudentDetailPage = async (studentId) => {
     appContainer.innerHTML = `<p class="text-center mt-10">Loading student details...</p>`;
 
     try {
@@ -290,7 +308,7 @@ window.renderStudentDetailPage = async (studentId) => {
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold mb-4">Syllabus Tracker</h3>
                         <ul id="syllabus-list" class="space-y-2">
-                           ${renderSyllabus(student.syllabus || [], student.id)}
+                           <!-- This container will be filled dynamically -->
                         </ul>
                         <form id="add-topic-form" class="mt-4 flex">
                             <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 border rounded-l-md focus:outline-none focus:ring-1" required>
@@ -315,6 +333,14 @@ window.renderStudentDetailPage = async (studentId) => {
             showLogSessionForm(student);
         });
 
+        onSnapshot(studentRef, (docSnap) => {
+            const updatedStudent = docSnap.data();
+            const syllabusListElement = document.getElementById('syllabus-list');
+            if (syllabusListElement) {
+                syllabusListElement.innerHTML = renderSyllabus(updatedStudent.syllabus || [], studentId);
+            }
+        });
+
         // Fetch and render sessions
         const sessionsQuery = query(
             collection(db, 'sessions'),
@@ -324,18 +350,19 @@ window.renderStudentDetailPage = async (studentId) => {
         );
         onSnapshot(sessionsQuery, (querySnapshot) => {
             const sessionLogList = document.getElementById('session-log-list');
-            if (querySnapshot.empty) {
-                sessionLogList.innerHTML = `<p class="text-gray-500">No sessions logged yet.</p>`;
-                return;
-            }
-            sessionLogList.innerHTML = querySnapshot.docs.map(doc => {
-                const session = {id: doc.id, ...doc.data()};
-                const topicsCovered = (session.topicsCoveredIds || [])
-                    .map(topicId => (student.syllabus || []).find(t => t.id === topicId)?.title)
-                    .filter(Boolean)
-                    .join(', ');
+            if (sessionLogList) {
+                if (querySnapshot.empty) {
+                    sessionLogList.innerHTML = `<p class="text-gray-500">No sessions logged yet.</p>`;
+                    return;
+                }
+                sessionLogList.innerHTML = querySnapshot.docs.map(doc => {
+                    const session = {id: doc.id, ...doc.data()};
+                    const topicsCovered = (session.topicsCoveredIds || [])
+                        .map(topicId => (student.syllabus || []).find(t => t.id === topicId)?.title)
+                        .filter(Boolean)
+                        .join(', ');
 
-                return `
+                    return `
                     <div class="border-b pb-4">
                         <p class="font-bold">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
                         <p class="text-sm mt-2"><strong class="font-semibold">Notes:</strong> ${session.notes}</p>
@@ -343,7 +370,8 @@ window.renderStudentDetailPage = async (studentId) => {
                         <p class="text-sm mt-1"><strong class="font-semibold">Topics:</strong> ${topicsCovered || 'None'}</p>
                     </div>
                 `;
-            }).join('');
+                }).join('');
+            }
         });
 
     } catch (error) {
@@ -360,9 +388,9 @@ const renderSyllabus = (syllabus, studentId) => {
         <li class="flex justify-between items-center p-2 rounded hover:bg-gray-50">
             <span>${topic.title}</span>
             <div class="flex items-center space-x-1">
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === 'Not Started' ? 'bg-gray-500 text-white' : 'bg-gray-200'}">Not Started</button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === 'In Progress' ? 'bg-yellow-500 text-white' : 'bg-yellow-100'}">In Progress</button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === 'Completed' ? 'bg-green-500 text-white' : 'bg-green-100'}">Completed</button>
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200'}">Not Started</button>
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-100'}">In Progress</button>
+                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}" data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-100'}">Completed</button>
             </div>
         </li>
     `).join('');
@@ -517,7 +545,7 @@ document.addEventListener('click', async (e) => {
         if (confirm('Are you sure you want to archive this student?')) {
             const studentId = e.target.dataset.id;
             const studentRef = doc(db, 'students', studentId);
-            await updateDoc(studentRef, {status: 'Archived'});
+            await updateDoc(studentRef, {status: STATUS.ARCHIVED});
             navigateTo('/');
         }
     }
@@ -562,7 +590,7 @@ document.addEventListener('submit', async (e) => {
             contact: formData.get('contact'),
             dates: formData.getAll('dates').filter(d => d).map(d => new Date(d).toISOString()),
             tutorId: currentUser.uid,
-            status: 'Active',
+            status: STATUS.ACTIVE,
             syllabus: [],
         };
         await addDoc(collection(db, 'students'), studentData);
@@ -606,7 +634,7 @@ document.addEventListener('submit', async (e) => {
                 syllabus: arrayUnion({
                     id: crypto.randomUUID(), // Simple UUID for topics
                     title: title,
-                    status: 'Not Started',
+                    status: TOPIC_STATUS.NOT_STARTED,
                 }),
             });
             e.target.reset();
