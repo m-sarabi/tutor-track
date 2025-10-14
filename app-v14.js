@@ -260,38 +260,63 @@ const renderDashboardPage = () => {
     const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', STATUS.ACTIVE));
     onSnapshot(q, (querySnapshot) => {
         const studentsList = document.getElementById('students-list');
-        if (studentsList) {
-            if (querySnapshot.empty) {
-                studentsList.innerHTML = `<div class="glass-panel p-6 col-span-full"><p class="text-gray-200">You haven't added any students yet. Click "Add Student" to get started!</p></div>`;
-                return;
-            }
-            studentsList.innerHTML = ''; // Clear list
-            querySnapshot.forEach((doc) => {
-                const student = {id: doc.id, ...doc.data()};
+        if (!studentsList) return; // Exit if the page has changed
 
-                const upcomingDates = (student.dates || [])
-                    .map(d => new Date(d))
-                    .filter(d => d > new Date())
-                    .sort((a, b) => a - b)
-                    .map(d => formatDateTime(d));
+        if (querySnapshot.empty) {
+            studentsList.innerHTML = `<div class="glass-panel p-6 col-span-full"><p class="text-gray-200">You haven't added any students yet. Click "Add Student" to get started!</p></div>`;
+            return;
+        }
 
-                const studentCard = document.createElement('div');
-                studentCard.className = 'glass-panel p-6 hover:bg-white/20 cursor-pointer';
-                studentCard.dataset.id = student.id;
-                studentCard.innerHTML = `
+        const students = [];
+        querySnapshot.forEach((doc) => {
+            students.push({ id: doc.id, ...doc.data() });
+        });
+
+        const getNextSession = (student) => {
+            const upcoming = (student.dates || [])
+                .map(d => new Date(d))
+                .filter(d => d > new Date())
+                .sort((a, b) => a - b);
+            return upcoming.length > 0 ? upcoming[0] : null;
+        };
+
+        students.sort((a, b) => {
+            const nextSessionA = getNextSession(a);
+            const nextSessionB = getNextSession(b);
+
+            if (nextSessionA && !nextSessionB) return -1; // A has a session, B does not -> A comes first
+            if (!nextSessionA && nextSessionB) return 1;  // B has a session, A does not -> B comes first
+            if (!nextSessionA && !nextSessionB) return 0; // Neither has a session -> order doesn't matter
+
+            // Both have sessions -> sort by date
+            return nextSessionA.getTime() - nextSessionB.getTime();
+        });
+
+        studentsList.innerHTML = '';
+        students.forEach((student) => {
+            const upcomingDates = (student.dates || [])
+                .map(d => new Date(d))
+                .filter(d => d > new Date())
+                .sort((a, b) => a - b)
+                .map(d => formatDateTime(d));
+
+            const studentCard = document.createElement('div');
+            studentCard.className = 'glass-panel p-6 hover:bg-white/20 cursor-pointer';
+            studentCard.dataset.id = student.id;
+            studentCard.innerHTML = `
                 <h3 class="text-xl font-bold text-white">${student.name}</h3>
                 <p class="text-gray-300">${student.subject}</p>
                 <div class="mt-4">
                     <h4 class="text-sm font-semibold text-gray-400 uppercase">Upcoming Sessions</h4>
                     ${upcomingDates.length > 0
-                    ? `<p class="text-gray-200">${upcomingDates.slice(0, 2).map(d => d.toLocaleString()).join('<br>')}</p>`
-                    : `<p class="text-gray-400 text-sm">No upcoming sessions scheduled.</p>`}
+                ? `<p class="text-gray-200">${upcomingDates.slice(0, 3).join('<br>')}</p>`
+                : `<p class="text-gray-400 text-sm">No upcoming sessions scheduled.</p>`
+            }
                 </div>
             `;
-                studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
-                studentsList.appendChild(studentCard);
-            });
-        }
+            studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
+            studentsList.appendChild(studentCard);
+        });
     });
 };
 
