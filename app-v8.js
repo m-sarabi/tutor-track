@@ -20,19 +20,21 @@ import {
     onAuthStateChanged,
 } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {
-    collection,
     addDoc,
-    query,
-    where,
-    onSnapshot,
-    doc,
-    setDoc,
-    getDoc,
-    updateDoc,
     arrayUnion,
-    Timestamp,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    onSnapshot,
     orderBy,
-    deleteDoc, // ADDED: Import deleteDoc function
+    query,
+    setDoc,
+    updateDoc,
+    where,
+    writeBatch,
+    Timestamp
 } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const appContainer = document.getElementById('app');
@@ -83,6 +85,7 @@ const routes = {
     '/login': 'login',
     '/signup': 'signup',
     '/student/:id': 'studentDetail',
+    '/archived': 'archivedDashboard',
 };
 
 const navigateTo = (path) => {
@@ -118,6 +121,7 @@ const handleRouteChange = () => {
         dashboard: renderDashboardPage,
         login: renderLoginPage,
         signup: renderSignupPage,
+        archivedDashboard: renderArchivedDashboardPage,
         // studentDetail is handled separately
     };
 
@@ -225,7 +229,10 @@ const renderDashboardPage = () => {
         <main class="container mx-auto px-6 py-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-semibold text-gray-800">My Students</h2>
-                <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">+ Add Student</button>
+                <div>
+                     <a href="/archived" data-link class="text-blue-500 hover:underline mr-4">View Archived</a>
+                     <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">+ Add Student</button>
+                </div>
             </div>
             <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Student cards will be inserted here -->
@@ -260,6 +267,59 @@ const renderDashboardPage = () => {
                 </div>
             `;
                 studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
+                studentsList.appendChild(studentCard);
+            });
+        }
+    });
+};
+
+// Render Archived Page
+const renderArchivedDashboardPage = () => {
+    appContainer.innerHTML = `
+        <header class="bg-white shadow-md">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="/" data-link class="text-blue-500 hover:underline">&larr; Back to Dashboard</a>
+                <div>
+                    <span class="text-gray-700 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+                </div>
+            </div>
+        </header>
+        <main class="container mx-auto px-6 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-semibold text-gray-800">Archived Students</h2>
+            </div>
+            <div id="archived-students-list" class="space-y-4">
+                <!-- Archived student cards will be inserted here -->
+                <p>Loading archived students...</p>
+            </div>
+        </main>
+    `;
+
+    const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', STATUS.ARCHIVED));
+    onSnapshot(q, (querySnapshot) => {
+        const studentsList = document.getElementById('archived-students-list');
+        if (studentsList) {
+            if (querySnapshot.empty) {
+                studentsList.innerHTML = `<p class="text-gray-500">You have no archived students.</p>`;
+                return;
+            }
+            studentsList.innerHTML = ''; // Clear list
+            querySnapshot.forEach((doc) => {
+                const student = {id: doc.id, ...doc.data()};
+                const studentCard = document.createElement('div');
+                studentCard.className = 'bg-white p-4 rounded-lg shadow-md flex justify-between items-center';
+                studentCard.dataset.id = student.id;
+                studentCard.innerHTML = `
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">${student.name}</h3>
+                        <p class="text-gray-600">${student.subject}</p>
+                    </div>
+                    <div class="space-x-2">
+                        <button data-action="restore-student" data-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Restore</button>
+                        <button data-action="delete-student" data-id="${student.id}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete Permanently</button>
+                    </div>
+                `;
                 studentsList.appendChild(studentCard);
             });
         }
@@ -404,6 +464,7 @@ const renderSyllabus = (syllabus, studentId) => {
 };
 
 // --- MODALS --- //
+
 const showModal = (title, content) => {
     const modal = document.createElement('div');
     modal.className = 'modal-backdrop';
@@ -557,6 +618,41 @@ document.addEventListener('click', async (e) => {
             const studentRef = doc(db, 'students', studentId);
             await updateDoc(studentRef, {status: STATUS.ARCHIVED});
             navigateTo('/');
+        }
+    }
+
+    if (action === 'restore-student') {
+        const studentId = target.dataset.id;
+        const studentRef = doc(db, 'students', studentId);
+        try {
+            await updateDoc(studentRef, {status: STATUS.ACTIVE});
+            // The onSnapshot listener will automatically remove the student from the list
+        } catch (error) {
+            console.error('Error restoring student: ', error);
+            alert('Failed to restore student.');
+        }
+    }
+
+    if (action === 'delete-student') {
+        const studentId = target.dataset.id;
+        if (confirm('WARNING: This will permanently delete the student and ALL their session logs. This action cannot be undone. Are you sure?')) {
+            try {
+                // Step 1: Find and delete all associated sessions
+                const sessionsQuery = query(collection(db, 'sessions'), where('studentId', '==', studentId));
+                const sessionDocs = await getDocs(sessionsQuery);
+
+                const batch = writeBatch(db);
+                sessionDocs.forEach(sessionDoc => {
+                    batch.delete(sessionDoc.ref);
+                });
+                await batch.commit();
+
+                await deleteDoc(doc(db, 'students', studentId));
+
+            } catch (error) {
+                console.error('Error permanently deleting student: ', error);
+                alert('Failed to delete student and their data.');
+            }
         }
     }
 
