@@ -175,7 +175,7 @@ const renderLoginPage = () => {
                                 class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
                         <div class="flex items-baseline justify-between">
-                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Login</button>
+                            <button type="submit" class="w-full px-6 pt-3 pb-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Login</button>
                         </div>
                         <div class="text-center mt-2">
                             <a href="/signup" data-link class="text-sm text-blue-300 hover:underline">Don't have an account? Sign up</a>
@@ -190,7 +190,8 @@ const renderLoginPage = () => {
                         <span class="px-2 bg-gray-700/50 text-gray-300 rounded-full">Or continue with</span>
                     </div>
                 </div>
-                <button id="google-signin-btn" class="w-full px-6 py-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-700 flex items-center justify-center">
+                <button id="google-signin-btn" class="w-full px-6 pt-3 pb-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-700 flex items-center justify-center">
+                    <img src="/assets/google.svg" alt="" class="w-6 me-2 pb-1">
                     Sign in with Google
                 </button>
             </div>
@@ -526,11 +527,11 @@ const renderSyllabus = (syllabus, studentId) => {
             <span class="flex-grow">${topic.title}</span>
             <div class="flex items-center space-x-1 flex-shrink-0 ml-4">
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200 text-gray-800 opacity-50'}">NS</button>
+                    data-status="Not Started" class="status-btn text-xs p-2 aspect-square rounded bg-gray-200 text-white ${topic.status === TOPIC_STATUS.NOT_STARTED ? '' : 'opacity-50 scale-75'}"><img src="/assets/circle.svg" alt=""></button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-200 text-yellow-800 opacity-50'}">IP</button>
+                    data-status="In Progress" class="status-btn text-xs p-2 aspect-square rounded bg-yellow-500 text-white ${topic.status === TOPIC_STATUS.IN_PROGRESS ? '' : 'opacity-50 scale-75'}"><img src="/assets/loader.svg" alt=""></button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-200 text-green-800 opacity-50'}">C</button>
+                    data-status="Completed" class="status-btn text-xs p-2 aspect-square rounded bg-green-500 text-white ${topic.status === TOPIC_STATUS.COMPLETED ? '' : 'opacity-50 scale-75'}"><img src="/assets/check-circle.svg" alt=""></button>
                 <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
             </div>
         </li>
