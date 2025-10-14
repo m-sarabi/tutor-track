@@ -104,8 +104,8 @@ const routes = {
 };
 
 const navigateTo = (path) => {
-    // Make sure the path starts with a slash
-    const fullPath = `${BASE_PATH}${path.startsWith('/') ? '' : '/'}${path}`;
+    // Combine the base path and the app path
+    const fullPath = (BASE_PATH + path).replace('//', '/');
     window.history.pushState({}, path, window.location.origin + fullPath);
     handleRouteChange();
 };
