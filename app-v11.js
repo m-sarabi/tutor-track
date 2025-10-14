@@ -159,38 +159,38 @@ window.onpopstate = handleRouteChange;
 // Render Login Page
 const renderLoginPage = () => {
     appContainer.innerHTML = `
-        <div class="flex items-center justify-center min-h-screen bg-gray-100">
-            <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
-                <h3 class="text-2xl font-bold text-center">TutorTrack Login</h3>
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="px-8 py-10 text-left glass-panel w-full max-w-md">
+                <h3 class="text-2xl font-bold text-center text-white">TutorTrack Login</h3>
                 <form id="login-form">
                     <div class="mt-4">
                         <div>
-                            <label class="block" for="email">Email</label>
+                            <label class="block text-gray-200" for="email">Email</label>
                             <input type="email" placeholder="Email" id="login-email" required
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
                         <div class="mt-4">
-                            <label class="block">Password</label>
+                            <label class="block text-gray-200">Password</label>
                             <input type="password" placeholder="Password" id="login-password" required
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
                         <div class="flex items-baseline justify-between">
-                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
+                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Login</button>
                         </div>
                         <div class="text-center mt-2">
-                            <a href="/signup" data-link class="text-sm text-blue-600 hover:underline">Don't have an account? Sign up</a>
+                            <a href="/signup" data-link class="text-sm text-blue-300 hover:underline">Don't have an account? Sign up</a>
                         </div>
                     </div>
                 </form>
                  <div class="relative my-4">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
+                        <div class="w-full border-t border-gray-500"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        <span class="px-2 bg-gray-700/50 text-gray-300 rounded-full">Or continue with</span>
                     </div>
                 </div>
-                <button id="google-signin-btn" class="w-full px-6 py-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-900 flex items-center justify-center">
+                <button id="google-signin-btn" class="w-full px-6 py-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-700 flex items-center justify-center">
                     Sign in with Google
                 </button>
             </div>
@@ -201,26 +201,26 @@ const renderLoginPage = () => {
 // Render Sign Up Page
 const renderSignupPage = () => {
     appContainer.innerHTML = `
-       <div class="flex items-center justify-center min-h-screen bg-gray-100">
-            <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg">
-                <h3 class="text-2xl font-bold text-center">Create an Account</h3>
+       <div class="flex items-center justify-center min-h-screen">
+            <div class="px-8 py-10 text-left glass-panel w-full max-w-md">
+                <h3 class="text-2xl font-bold text-center text-white">Create an Account</h3>
                 <form id="signup-form">
                     <div class="mt-4">
                         <div>
-                            <label class="block" for="email">Email</label>
+                            <label class="block text-gray-200" for="email">Email</label>
                             <input type="email" placeholder="Email" id="signup-email" required
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
                         <div class="mt-4">
-                            <label class="block">Password</label>
+                            <label class="block text-gray-200">Password</label>
                             <input type="password" placeholder="Password" id="signup-password" required
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
                         <div class="flex">
-                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Sign Up</button>
+                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Sign Up</button>
                         </div>
                         <div class="text-center mt-2">
-                           <a href="/login" data-link class="text-sm text-blue-600 hover:underline">Already have an account? Log in</a>
+                           <a href="/login" data-link class="text-sm text-blue-300 hover:underline">Already have an account? Log in</a>
                         </div>
                     </div>
                 </form>
@@ -232,21 +232,21 @@ const renderSignupPage = () => {
 // Render Dashboard
 const renderDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="bg-white shadow-md">
+        <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">TutorTrack</h1>
+                <h1 class="text-2xl font-bold text-white">TutorTrack</h1>
                 <div>
-                    <span class="text-gray-700 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+                    <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
                 </div>
             </div>
         </header>
         <main class="container mx-auto px-6 py-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-gray-800">My Students</h2>
+                <h2 class="text-3xl font-semibold text-white">My Students</h2>
                 <div>
-                     <a href="/archived" data-link class="text-blue-500 hover:underline mr-4">View Archived</a>
-                     <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">+ Add Student</button>
+                     <a href="/archived" data-link class="text-blue-300 hover:underline mr-4">View Archived</a>
+                     <button id="add-student-btn" class="px-6 py-2 bg-green-500/80 text-white rounded-lg hover:bg-green-500">+ Add Student</button>
                 </div>
             </div>
             <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -262,7 +262,7 @@ const renderDashboardPage = () => {
         const studentsList = document.getElementById('students-list');
         if (studentsList) {
             if (querySnapshot.empty) {
-                studentsList.innerHTML = `<p class="text-gray-500">You haven't added any students yet. Click "Add Student" to get started!</p>`;
+                studentsList.innerHTML = `<div class="glass-panel p-6 col-span-full"><p class="text-gray-200">You haven't added any students yet. Click "Add Student" to get started!</p></div>`;
                 return;
             }
             studentsList.innerHTML = ''; // Clear list
@@ -276,16 +276,16 @@ const renderDashboardPage = () => {
                     .map(d => formatDateTime(d));
 
                 const studentCard = document.createElement('div');
-                studentCard.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl cursor-pointer';
+                studentCard.className = 'glass-panel p-6 hover:bg-white/20 cursor-pointer';
                 studentCard.dataset.id = student.id;
                 studentCard.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800">${student.name}</h3>
-                <p class="text-gray-600">${student.subject}</p>
+                <h3 class="text-xl font-bold text-white">${student.name}</h3>
+                <p class="text-gray-300">${student.subject}</p>
                 <div class="mt-4">
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase">Upcoming Sessions</h4>
+                    <h4 class="text-sm font-semibold text-gray-400 uppercase">Upcoming Sessions</h4>
                     ${upcomingDates.length > 0
-                    ? `<p class="text-gray-700">${upcomingDates.slice(0, 2).map(d => d.toLocaleString()).join('<br>')}</p>`
-                    : `<p class="text-gray-500 text-sm">No upcoming sessions scheduled.</p>`}
+                    ? `<p class="text-gray-200">${upcomingDates.slice(0, 2).map(d => d.toLocaleString()).join('<br>')}</p>`
+                    : `<p class="text-gray-400 text-sm">No upcoming sessions scheduled.</p>`}
                 </div>
             `;
                 studentCard.addEventListener('click', () => navigateTo(`/student/${student.id}`));
@@ -298,18 +298,18 @@ const renderDashboardPage = () => {
 // Render Archived Page
 const renderArchivedDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="bg-white shadow-md">
+        <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <a href="/" data-link class="text-blue-500 hover:underline">&larr; Back to Dashboard</a>
+                 <a href="/" data-link class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
                 <div>
-                    <span class="text-gray-700 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+                    <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
                 </div>
             </div>
         </header>
         <main class="container mx-auto px-6 py-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-gray-800">Archived Students</h2>
+                <h2 class="text-3xl font-semibold text-white">Archived Students</h2>
             </div>
             <div id="archived-students-list" class="space-y-4">
                 <!-- Archived student cards will be inserted here -->
@@ -323,23 +323,23 @@ const renderArchivedDashboardPage = () => {
         const studentsList = document.getElementById('archived-students-list');
         if (studentsList) {
             if (querySnapshot.empty) {
-                studentsList.innerHTML = `<p class="text-gray-500">You have no archived students.</p>`;
+                studentsList.innerHTML = `<div class="glass-panel p-6"><p class="text-gray-200">You have no archived students.</p></div>`;
                 return;
             }
             studentsList.innerHTML = ''; // Clear list
             querySnapshot.forEach((doc) => {
                 const student = {id: doc.id, ...doc.data()};
                 const studentCard = document.createElement('div');
-                studentCard.className = 'bg-white p-4 rounded-lg shadow-md flex justify-between items-center';
+                studentCard.className = 'glass-panel p-4 flex justify-between items-center';
                 studentCard.dataset.id = student.id;
                 studentCard.innerHTML = `
                     <div>
-                        <h3 class="text-lg font-bold text-gray-800">${student.name}</h3>
-                        <p class="text-gray-600">${student.subject}</p>
+                        <h3 class="text-lg font-bold text-white">${student.name}</h3>
+                        <p class="text-gray-300">${student.subject}</p>
                     </div>
                     <div class="space-x-2">
-                        <button data-action="restore-student" data-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Restore</button>
-                        <button data-action="delete-student" data-id="${student.id}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete Permanently</button>
+                        <button data-action="restore-student" data-id="${student.id}" class="px-4 py-2 bg-green-500/80 text-white rounded hover:bg-green-500">Restore</button>
+                        <button data-action="delete-student" data-id="${student.id}" class="px-4 py-2 bg-red-600/80 text-white rounded hover:bg-red-700">Delete Permanently</button>
                     </div>
                 `;
                 studentsList.appendChild(studentCard);
@@ -365,52 +365,55 @@ const renderStudentDetailPage = async (studentId) => {
 
         // Render the main page structure
         appContainer.innerHTML = `
-            <header class="bg-white shadow-md">
+            <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
                 <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                    <a href="/" data-link class="text-blue-500 hover:underline">&larr; Back to Dashboard</a>
+                    <a href="/" data-link" class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
                     <div>
-                        <span class="text-gray-700 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                        <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>
+                        <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                        <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
                     </div>
                 </div>
             </header>
             <main class="container mx-auto px-6 py-8">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800">${student.name}</h2>
-                        <p class="text-xl text-gray-600">${student.subject}</p>
+                        <h2 class="text-3xl font-bold text-white">${student.name}</h2>
+                        <p class="text-xl text-gray-300">${student.subject}</p>
                     </div>
                     <div>
-                        <button data-action="edit-student" data-id="${student.id}" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 mr-2">Edit</button>
-                        <button data-action="archive-student" data-id="${student.id}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Archive</button>
+                        <button data-action="edit-student" data-id="${student.id}" class="px-4 py-2 bg-yellow-500/80 text-white rounded hover:bg-yellow-600 mr-2">Edit</button>
+                        <button data-action="archive-student" data-id="${student.id}" class="px-4 py-2 bg-gray-500/80 text-white rounded hover:bg-gray-600">Archive</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Left Column: Syllabus Tracker -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold mb-4">Syllabus Tracker</h3>
-                        <ul id="syllabus-list" class="space-y-2">
-                           <!-- This container will be filled dynamically -->
-                        </ul>
-                        <form id="add-topic-form" class="mt-4 flex">
-                            <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 border rounded-l-md focus:outline-none focus:ring-1" required>
-                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600">Add</button>
-                        </form>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-semibold mb-4">Scheduled Sessions</h3>
-                        <ul id="scheduled-sessions-list" class="space-y-2">
-                            <!-- Dates will be loaded here -->
-                        </ul>
-                    </div>
-                    <!-- Right Column: Session Log -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-semibold">Session Log</h3>
-                            <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">+ Log Session</button>
+                    <!-- Column 1: Syllabus & Sessions -->
+                    <div class="lg:col-span-1 space-y-8">
+                        <div class="glass-panel p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Syllabus Tracker</h3>
+                            <ul id="syllabus-list" class="space-y-2">
+                               <!-- This container will be filled dynamically -->
+                            </ul>
+                            <form id="add-topic-form" class="mt-4 flex">
+                                <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 border-0 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600">Add</button>
+                            </form>
                         </div>
-                        <div id="session-log-list" class="space-y-4">
+                        <div class="glass-panel p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-white">Scheduled Sessions</h3>
+                            <ul id="scheduled-sessions-list" class="space-y-2">
+                                <!-- Dates will be loaded here -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Session Log -->
+                    <div class="glass-panel p-6 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-semibold text-white">Session Log</h3>
+                            <button id="log-session-btn" class="px-4 py-2 bg-green-500/80 text-white rounded hover:bg-green-600">+ Log Session</button>
+                        </div>
+                        <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                             <!-- Session entries will be loaded here -->
                         </div>
                     </div>
@@ -436,10 +439,10 @@ const renderStudentDetailPage = async (studentId) => {
                     .sort((a, b) => a - b);
 
                 if (upcomingDates.length === 0) {
-                    sessionsListElement.innerHTML = `<li class="text-gray-500">No upcoming sessions.</li>`;
+                    sessionsListElement.innerHTML = `<li class="text-gray-400">No upcoming sessions.</li>`;
                 } else {
                     sessionsListElement.innerHTML = upcomingDates.map(date =>
-                        `<li class="p-2 rounded bg-gray-100">${formatDateTime(date)}</li>`,
+                        `<li class="p-2 rounded bg-black/20 text-gray-200">${formatDateTime(date)}</li>`,
                     ).join('');
                 }
             }
@@ -456,7 +459,7 @@ const renderStudentDetailPage = async (studentId) => {
             const sessionLogList = document.getElementById('session-log-list');
             if (sessionLogList) {
                 if (querySnapshot.empty) {
-                    sessionLogList.innerHTML = `<p class="text-gray-500">No sessions logged yet.</p>`;
+                    sessionLogList.innerHTML = `<p class="text-gray-300">No sessions logged yet.</p>`;
                     return;
                 }
                 sessionLogList.innerHTML = querySnapshot.docs.map(doc => {
@@ -467,16 +470,16 @@ const renderStudentDetailPage = async (studentId) => {
                         .join(', ');
 
                     return `
-                    <div class="border-b pb-4">
+                    <div class="border-b border-white/20 pb-4">
                         <div class="flex justify-between items-start">
                              <div>
-                                <p class="font-bold">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
+                                <p class="font-bold text-white">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
                              </div>
-                             <button data-action="delete-session" data-session-id="${session.id}" class="text-red-500 hover:text-red-700 font-bold text-2xl">&times;</button>
+                             <button data-action="delete-session" data-session-id="${session.id}" class="text-red-400 hover:text-red-600 font-bold text-2xl leading-none">&times;</button>
                         </div>
-                        <p class="text-sm mt-2"><strong class="font-semibold">Notes:</strong> ${session.notes}</p>
-                        <p class="text-sm mt-1"><strong class="font-semibold">Next Steps:</strong> ${session.nextSteps}</p>
-                        <p class="text-sm mt-1"><strong class="font-semibold">Topics:</strong> ${topicsCovered || 'None'}</p>
+                        <p class="text-sm mt-2 text-gray-200"><strong class="font-semibold text-gray-100">Notes:</strong> ${session.notes}</p>
+                        <p class="text-sm mt-1 text-gray-200"><strong class="font-semibold text-gray-100">Next Steps:</strong> ${session.nextSteps}</p>
+                        <p class="text-sm mt-1 text-gray-200"><strong class="font-semibold text-gray-100">Topics:</strong> ${topicsCovered || 'None'}</p>
                     </div>
                 `;
                 }).join('');
@@ -491,19 +494,19 @@ const renderStudentDetailPage = async (studentId) => {
 
 const renderSyllabus = (syllabus, studentId) => {
     if (!syllabus || syllabus.length === 0) {
-        return `<li class="text-gray-500">No topics added to the syllabus yet.</li>`;
+        return `<li class="text-gray-400">No topics added to the syllabus yet.</li>`;
     }
     return syllabus.map(topic => `
-        <li class="flex justify-between items-center p-2 rounded hover:bg-gray-50">
+        <li class="flex justify-between items-center p-2 rounded hover:bg-black/20 text-gray-200">
             <span class="flex-grow">${topic.title}</span>
             <div class="flex items-center space-x-1 flex-shrink-0 ml-4">
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200 opacity-50'}">Not Started</button>
+                    data-status="Not Started" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'bg-gray-500 text-white' : 'bg-gray-200 text-gray-800 opacity-50'}">NS</button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-100 opacity-50'}">In Progress</button>
+                    data-status="In Progress" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'bg-yellow-500 text-white' : 'bg-yellow-200 text-yellow-800 opacity-50'}">IP</button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-100 opacity-50'}">Completed</button>
-                <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
+                    data-status="Completed" class="status-btn text-xs px-2 py-1 rounded ${topic.status === TOPIC_STATUS.COMPLETED ? 'bg-green-500 text-white' : 'bg-green-200 text-green-800 opacity-50'}">C</button>
+                <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
             </div>
         </li>
     `).join('');
@@ -515,10 +518,10 @@ const showModal = (title, content) => {
     const modal = document.createElement('div');
     modal.className = 'modal-backdrop';
     modal.innerHTML = `
-        <div class="modal-content">
+        <div class="modal-content glass-panel">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold">${title}</h2>
-                <button data-action="close-modal" class="text-red-500 hover:text-red-700 text-4xl font-bold">&times;</button>
+                <h2 class="text-2xl font-bold text-white">${title}</h2>
+                <button data-action="close-modal" class="text-red-400 hover:text-red-600 text-4xl font-bold leading-none">&times;</button>
             </div>
             ${content}
         </div>
@@ -537,23 +540,23 @@ const showAddStudentModal = () => {
     const content = `
         <form id="add-student-form">
             <div class="mb-4">
-                <label class="block text-gray-700">Student Name</label>
-                <input type="text" name="name" class="w-full p-2 border rounded" required>
+                <label class="block text-gray-200">Student Name</label>
+                <input type="text" name="name" class="w-full p-2 rounded" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700">Subject</label>
-                <input type="text" name="subject" class="w-full p-2 border rounded" required>
+                <label class="block text-gray-200">Subject</label>
+                <input type="text" name="subject" class="w-full p-2 rounded" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700">Contact Info (Optional)</label>
-                <input type="text" name="contact" class="w-full p-2 border rounded">
+                <label class="block text-gray-200">Contact Info (Optional)</label>
+                <input type="text" name="contact" class="w-full p-2 rounded">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700">Scheduled Dates (Optional)</label>
+                <label class="block text-gray-200">Scheduled Dates (Optional)</label>
                 <div id="dates-container" class="space-y-2">
                     <!-- Date inputs will be added here dynamically -->
                 </div>
-                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-500 hover:underline">+ Add another date</button>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-300 hover:underline">+ Add another date</button>
             </div>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Student</button>
         </form>
@@ -564,32 +567,32 @@ const showAddStudentModal = () => {
 const showLogSessionForm = (student) => {
     const studentId = student.id;
     const syllabusOptions = (student.syllabus || []).map(topic =>
-        `<label class="flex items-center"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`,
+        `<label class="flex items-center text-gray-200"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`,
     ).join('');
 
     const content = `
         <form id="log-session-form" data-student-id="${studentId}">
             <div class="mb-4">
-                <label class="block">Date</label>
-                <input type="date" name="date" class="w-full p-2 border rounded" required>
+                <label class="block text-gray-200">Date</label>
+                <input type="date" name="date" class="w-full p-2 rounded" required>
             </div>
             <div class="mb-4">
-                <label class="block">Duration (minutes)</label>
-                <input type="number" name="duration" class="w-full p-2 border rounded" required>
+                <label class="block text-gray-200">Duration (minutes)</label>
+                <input type="number" name="duration" class="w-full p-2 rounded" required>
             </div>
             <div class="mb-4">
-                <label class="block">Session Notes</label>
-                <textarea name="notes" class="w-full p-2 border rounded" rows="3"></textarea>
+                <label class="block text-gray-200">Session Notes</label>
+                <textarea name="notes" class="w-full p-2 rounded" rows="3"></textarea>
             </div>
              <div class="mb-4">
-                <label class="block">Topics Covered</label>
-                <div class="max-h-32 overflow-y-auto border p-2 rounded">
-                    ${syllabusOptions || '<p class="text-sm text-gray-500">No syllabus topics available.</p>'}
+                <label class="block text-gray-200">Topics Covered</label>
+                <div class="max-h-32 overflow-y-auto border border-white/20 p-2 rounded">
+                    ${syllabusOptions || '<p class="text-sm text-gray-400">No syllabus topics available.</p>'}
                 </div>
             </div>
             <div class="mb-4">
-                <label class="block">Next Steps / Homework</label>
-                <textarea name="nextSteps" class="w-full p-2 border rounded" rows="2"></textarea>
+                <label class="block text-gray-200">Next Steps / Homework</label>
+                <textarea name="nextSteps" class="w-full p-2 rounded" rows="2"></textarea>
             </div>
             <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Log Session</button>
         </form>
@@ -601,31 +604,31 @@ const showEditStudentModal = (student) => {
     const existingDatesHTML = (student.dates || [])
         .map(date => `
             <div class="flex items-center space-x-2 date-input-row">
-                <input type="datetime-local" name="dates" class="w-full p-2 border rounded" value="${formatDateTimeForInput(new Date(date))}">
-                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold">&times;</button>
+                <input type="datetime-local" name="dates" class="w-full p-2 rounded" value="${formatDateTimeForInput(new Date(date))}">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-400 hover:text-red-600 font-bold">&times;</button>
             </div>
         `).join('');
 
     const content = `
         <form id="edit-student-form" data-id="${student.id}">
             <div class="mb-4">
-                <label class="block text-gray-700">Student Name</label>
-                <input type="text" name="name" class="w-full p-2 border rounded" value="${student.name}" required>
+                <label class="block text-gray-200">Student Name</label>
+                <input type="text" name="name" class="w-full p-2 rounded" value="${student.name}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700">Subject</label>
-                <input type="text" name="subject" class="w-full p-2 border rounded" value="${student.subject}" required>
+                <label class="block text-gray-200">Subject</label>
+                <input type="text" name="subject" class="w-full p-2 rounded" value="${student.subject}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700">Contact Info (Optional)</label>
-                <input type="text" name="contact" class="w-full p-2 border rounded" value="${student.contact || ''}">
+                <label class="block text-gray-200">Contact Info (Optional)</label>
+                <input type="text" name="contact" class="w-full p-2 rounded" value="${student.contact || ''}">
             </div>
              <div class="mb-4">
-                <label class="block text-gray-700">Scheduled Dates (Optional)</label>
+                <label class="block text-gray-200">Scheduled Dates (Optional)</label>
                 <div id="dates-container" class="space-y-2">
                     ${existingDatesHTML}
                 </div>
-                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-500 hover:underline">+ Add another date</button>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-300 hover:underline">+ Add another date</button>
             </div>
             <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Save Changes</button>
         </form>
@@ -658,8 +661,8 @@ document.addEventListener('click', async (e) => {
             const dateRow = document.createElement('div');
             dateRow.className = 'flex items-center space-x-2 date-input-row';
             dateRow.innerHTML = `
-                <input type="datetime-local" name="dates" class="w-full p-2 border rounded">
-                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold">&times;</button>
+                <input type="datetime-local" name="dates" class="w-full p-2 rounded">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-400 hover:text-red-600 font-bold">&times;</button>
             `;
             container.appendChild(dateRow);
         }
@@ -840,7 +843,7 @@ document.addEventListener('submit', async (e) => {
         try {
             await updateDoc(studentRef, updatedData);
             closeModal();
-            renderStudentDetailPage(studentId);
+            // No need to call renderStudentDetailPage, onSnapshot handles it.
         } catch (error) {
             console.error('Error updating student:', error);
             alert('Failed to update student. Please try again.');
