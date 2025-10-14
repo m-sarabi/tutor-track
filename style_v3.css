@@ -34,6 +34,11 @@ textarea {
     color: white !important;
 }
 
+input[type="date"],
+input[type="datetime-local"] {
+    color-scheme: dark;
+}
+
 input::placeholder,
 textarea::placeholder {
     color: #ccc !important;
