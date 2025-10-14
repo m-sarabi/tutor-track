@@ -34,7 +34,7 @@ import {
     updateDoc,
     where,
     writeBatch,
-    Timestamp
+    Timestamp,
 } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
 
 const appContainer = document.getElementById('app');
@@ -77,6 +77,21 @@ const handleLogOut = () => {
     signOut(auth).catch(error => alert(`Logout failed: ${error.message}`));
 };
 
+// --- Helper Functions --- //
+
+const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+const formatDateTimeForInput = (date) => {
+    return formatDateTime(date).replace(' ', 'T');
+};
 
 // --- ROUTING --- //
 
@@ -253,6 +268,13 @@ const renderDashboardPage = () => {
             studentsList.innerHTML = ''; // Clear list
             querySnapshot.forEach((doc) => {
                 const student = {id: doc.id, ...doc.data()};
+
+                const upcomingDates = (student.dates || [])
+                    .map(d => new Date(d))
+                    .filter(d => d > new Date())
+                    .sort((a, b) => a - b)
+                    .map(d => formatDateTime(d));
+
                 const studentCard = document.createElement('div');
                 studentCard.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-xl cursor-pointer';
                 studentCard.dataset.id = student.id;
@@ -261,8 +283,8 @@ const renderDashboardPage = () => {
                 <p class="text-gray-600">${student.subject}</p>
                 <div class="mt-4">
                     <h4 class="text-sm font-semibold text-gray-500 uppercase">Upcoming Sessions</h4>
-                    ${student.dates && student.dates.length > 0
-                    ? `<p class="text-gray-700">${student.dates.slice(0, 2).map(d => new Date(d).toLocaleString()).join('<br>')}</p>`
+                    ${upcomingDates.length > 0
+                    ? `<p class="text-gray-700">${upcomingDates.slice(0, 2).map(d => d.toLocaleString()).join('<br>')}</p>`
                     : `<p class="text-gray-500 text-sm">No upcoming sessions scheduled.</p>`}
                 </div>
             `;
@@ -364,7 +386,7 @@ const renderStudentDetailPage = async (studentId) => {
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Left Column: Syllabus Tracker -->
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold mb-4">Syllabus Tracker</h3>
@@ -375,6 +397,12 @@ const renderStudentDetailPage = async (studentId) => {
                             <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 border rounded-l-md focus:outline-none focus:ring-1" required>
                             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600">Add</button>
                         </form>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4">Scheduled Sessions</h3>
+                        <ul id="scheduled-sessions-list" class="space-y-2">
+                            <!-- Dates will be loaded here -->
+                        </ul>
                     </div>
                     <!-- Right Column: Session Log -->
                     <div class="bg-white p-6 rounded-lg shadow-md">
@@ -399,6 +427,21 @@ const renderStudentDetailPage = async (studentId) => {
             const syllabusListElement = document.getElementById('syllabus-list');
             if (syllabusListElement) {
                 syllabusListElement.innerHTML = renderSyllabus(updatedStudent.syllabus || [], studentId);
+            }
+            const sessionsListElement = document.getElementById('scheduled-sessions-list');
+            if (sessionsListElement) {
+                const upcomingDates = (updatedStudent.dates || [])
+                    .map(d => new Date(d))
+                    .filter(d => d > new Date())
+                    .sort((a, b) => a - b);
+
+                if (upcomingDates.length === 0) {
+                    sessionsListElement.innerHTML = `<li class="text-gray-500">No upcoming sessions.</li>`;
+                } else {
+                    sessionsListElement.innerHTML = upcomingDates.map(date =>
+                        `<li class="p-2 rounded bg-gray-100">${formatDateTime(date)}</li>`,
+                    ).join('');
+                }
             }
         });
 
@@ -502,10 +545,12 @@ const showAddStudentModal = () => {
                 <label class="block text-gray-700">Contact Info (Optional)</label>
                 <input type="text" name="contact" class="w-full p-2 border rounded">
             </div>
-             <div class="mb-4">
+            <div class="mb-4">
                 <label class="block text-gray-700">Scheduled Dates (Optional)</label>
-                <input type="datetime-local" name="dates" class="w-full p-2 border rounded" multiple>
-                 <small class="text-gray-500">Hold Ctrl/Cmd to select multiple dates.</small>
+                <div id="dates-container" class="space-y-2">
+                    <!-- Date inputs will be added here dynamically -->
+                </div>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-500 hover:underline">+ Add another date</button>
             </div>
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Student</button>
         </form>
@@ -550,8 +595,14 @@ const showLogSessionForm = (student) => {
 };
 
 const showEditStudentModal = (student) => {
-    // Note: Editing multiple datetime-local inputs is tricky.
-    // For this minimalist app, we'll ask the user to re-select all dates.
+    const existingDatesHTML = (student.dates || [])
+        .map(date => `
+            <div class="flex items-center space-x-2 date-input-row">
+                <input type="datetime-local" name="dates" class="w-full p-2 border rounded" value="${formatDateTimeForInput(new Date(date))}">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold">&times;</button>
+            </div>
+        `).join('');
+
     const content = `
         <form id="edit-student-form" data-id="${student.id}">
             <div class="mb-4">
@@ -568,8 +619,10 @@ const showEditStudentModal = (student) => {
             </div>
              <div class="mb-4">
                 <label class="block text-gray-700">Scheduled Dates (Optional)</label>
-                <input type="datetime-local" name="dates" class="w-full p-2 border rounded" multiple>
-                 <small class="text-gray-500">Current dates will be replaced. Please re-select all desired dates.</small>
+                <div id="dates-container" class="space-y-2">
+                    ${existingDatesHTML}
+                </div>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-500 hover:underline">+ Add another date</button>
             </div>
             <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Save Changes</button>
         </form>
@@ -595,6 +648,23 @@ document.addEventListener('click', async (e) => {
     if (e.target.id === 'google-signin-btn') handleGoogleSignIn();
     if (e.target.id === 'add-student-btn') showAddStudentModal();
     if (action === 'close-modal') closeModal();
+
+    if (action === 'add-date-input') {
+        const container = document.getElementById('dates-container');
+        if (container) {
+            const dateRow = document.createElement('div');
+            dateRow.className = 'flex items-center space-x-2 date-input-row';
+            dateRow.innerHTML = `
+                <input type="datetime-local" name="dates" class="w-full p-2 border rounded">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold">&times;</button>
+            `;
+            container.appendChild(dateRow);
+        }
+    }
+
+    if (action === 'remove-date-input') {
+        target.closest('.date-input-row').remove();
+    }
 
     if (action === 'edit-student') {
         const studentId = target.closest('[data-id]').dataset.id;
@@ -724,11 +794,17 @@ document.addEventListener('submit', async (e) => {
     // Add Student
     if (e.target.id === 'add-student-form') {
         const formData = new FormData(e.target);
+        const dateInputs = e.target.querySelectorAll('input[name="dates"]');
+        const dates = Array.from(dateInputs)
+            .map(input => input.value)
+            .filter(d => d)
+            .map(d => new Date(d).toISOString());
+
         const studentData = {
             name: formData.get('name'),
             subject: formData.get('subject'),
             contact: formData.get('contact'),
-            dates: formData.getAll('dates').filter(d => d).map(d => new Date(d).toISOString()),
+            dates: dates,
             tutorId: currentUser.uid,
             status: STATUS.ACTIVE,
             syllabus: [],
@@ -745,18 +821,22 @@ document.addEventListener('submit', async (e) => {
         const studentRef = doc(db, 'students', studentId);
         const formData = new FormData(e.target);
 
+        const dateInputs = e.target.querySelectorAll('input[name="dates"]');
+        const dates = Array.from(dateInputs)
+            .map(input => input.value)
+            .filter(d => d)
+            .map(d => new Date(d).toISOString());
+
         const updatedData = {
             name: formData.get('name'),
             subject: formData.get('subject'),
             contact: formData.get('contact'),
-            // This will replace the entire dates array with the new selection
-            dates: formData.getAll('dates').filter(d => d).map(d => new Date(d).toISOString()),
+            dates: dates,
         };
 
         try {
             await updateDoc(studentRef, updatedData);
             closeModal();
-            // After updating, re-render the detail page to show the new data
             renderStudentDetailPage(studentId);
         } catch (error) {
             console.error('Error updating student:', error);
