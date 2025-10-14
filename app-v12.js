@@ -300,7 +300,7 @@ const renderArchivedDashboardPage = () => {
     appContainer.innerHTML = `
         <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                 <a href="/" data-link class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
+                 <a href="${BASE_PATH}" data-link class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
                 <div>
                     <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
                     <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
@@ -367,7 +367,7 @@ const renderStudentDetailPage = async (studentId) => {
         appContainer.innerHTML = `
             <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
                 <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                    <a href="/" data-link" class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
+                    <a href="${BASE_PATH}" data-link" class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
                     <div>
                         <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
                         <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
