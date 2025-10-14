@@ -191,7 +191,7 @@ const renderLoginPage = () => {
                     </div>
                 </div>
                 <button id="google-signin-btn" class="w-full px-6 pt-3 pb-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-700 flex items-center justify-center">
-                    <img src="/assets/google.svg" alt="" class="w-6 me-2 pb-1">
+                    <img src="assets/google.svg" alt="" class="w-6 me-2 pb-1">
                     Sign in with Google
                 </button>
             </div>
@@ -527,11 +527,11 @@ const renderSyllabus = (syllabus, studentId) => {
             <span class="flex-grow">${topic.title}</span>
             <div class="flex items-center space-x-1 flex-shrink-0 ml-4">
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Not Started" class="status-btn text-xs p-2 aspect-square rounded bg-gray-200 text-white ${topic.status === TOPIC_STATUS.NOT_STARTED ? '' : 'opacity-50 scale-75'}"><img src="/assets/circle.svg" alt=""></button>
+                    data-status="Not Started" class="status-btn text-xs p-2 aspect-square rounded bg-gray-200 text-white ${topic.status === TOPIC_STATUS.NOT_STARTED ? '' : 'opacity-50 scale-75'}"><img src="assets/circle.svg" alt=""></button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="In Progress" class="status-btn text-xs p-2 aspect-square rounded bg-yellow-500 text-white ${topic.status === TOPIC_STATUS.IN_PROGRESS ? '' : 'opacity-50 scale-75'}"><img src="/assets/loader.svg" alt=""></button>
+                    data-status="In Progress" class="status-btn text-xs p-2 aspect-square rounded bg-yellow-500 text-white ${topic.status === TOPIC_STATUS.IN_PROGRESS ? '' : 'opacity-50 scale-75'}"><img src="assets/loader.svg" alt=""></button>
                 <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Completed" class="status-btn text-xs p-2 aspect-square rounded bg-green-500 text-white ${topic.status === TOPIC_STATUS.COMPLETED ? '' : 'opacity-50 scale-75'}"><img src="/assets/check-circle.svg" alt=""></button>
+                    data-status="Completed" class="status-btn text-xs p-2 aspect-square rounded bg-green-500 text-white ${topic.status === TOPIC_STATUS.COMPLETED ? '' : 'opacity-50 scale-75'}"><img src="assets/check-circle.svg" alt=""></button>
                 <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
             </div>
         </li>
