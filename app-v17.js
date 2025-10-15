@@ -148,7 +148,7 @@ const handleRouteChange = () => {
     } else {
         appContainer.innerHTML = '<h1>404 - Not Found</h1>';
     }
-    // closeModal();
+    closeModal();
 };
 
 window.onpopstate = handleRouteChange;
@@ -156,42 +156,45 @@ window.onpopstate = handleRouteChange;
 
 // --- UI RENDERING --- //
 
+// Reusable Tailwind classes
+const panelClasses = 'bg-white/40 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg';
+const inputClasses = 'w-full px-4 py-2 mt-2 bg-white/60 border border-gray-300 rounded-md text-zinc-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500';
+const primaryButtonClasses = 'w-full px-6 py-2.5 mt-4 font-semibold text-white bg-sky-600 rounded-lg shadow-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500';
+
 // Render Login Page
 const renderLoginPage = () => {
     appContainer.innerHTML = `
-        <div class="flex items-center justify-center min-h-screen">
-            <div class="px-8 py-10 text-left glass-panel w-full max-w-md">
-                <h3 class="text-2xl font-bold text-center text-white">TutorTrack Login</h3>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="px-8 py-10 text-left ${panelClasses} w-full max-w-md">
+                <h3 class="text-2xl font-bold text-center text-gray-800">TutorTrack Login</h3>
                 <form id="login-form">
                     <div class="mt-4">
                         <div>
-                            <label class="block text-gray-200" for="email">Email</label>
-                            <input type="email" placeholder="Email" id="login-email" required
-                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <label class="block text-gray-700 font-medium" for="email">Email</label>
+                            <input type="email" placeholder="you@example.com" id="login-email" required class="${inputClasses}">
                         </div>
                         <div class="mt-4">
-                            <label class="block text-gray-200">Password</label>
-                            <input type="password" placeholder="Password" id="login-password" required
-                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <label class="block text-gray-700 font-medium">Password</label>
+                            <input type="password" placeholder="Password" id="login-password" required class="${inputClasses}">
                         </div>
                         <div class="flex items-baseline justify-between">
-                            <button type="submit" class="w-full px-6 pt-3 pb-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Login</button>
+                            <button type="submit" class="${primaryButtonClasses}">Login</button>
                         </div>
-                        <div class="text-center mt-2">
-                            <a href="/signup" data-link class="text-sm text-blue-300 hover:underline">Don't have an account? Sign up</a>
+                        <div class="text-center mt-4">
+                            <a href="/signup" data-link class="text-sm text-sky-700 hover:underline">Don't have an account? Sign up</a>
                         </div>
                     </div>
                 </form>
-                 <div class="relative my-4">
+                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-500"></div>
+                        <div class="w-full border-t border-gray-300"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-gray-700/50 text-gray-300 rounded-full">Or continue with</span>
+                        <span class="px-2 bg-white/30 text-gray-600 rounded-full backdrop-blur-sm">Or continue with</span>
                     </div>
                 </div>
-                <button id="google-signin-btn" class="w-full px-6 pt-3 pb-2 mt-2 text-white bg-red-600 rounded-lg hover:bg-red-700 flex items-center justify-center">
-                    <img src="${BASE_PATH}/assets/google.svg" alt="" class="w-6 me-2 pb-1">
+                <button id="google-signin-btn" class="w-full flex items-center justify-center px-6 py-2.5 mt-2 font-semibold text-gray-700 bg-white/80 border border-gray-300 rounded-lg shadow-sm hover:bg-white">
+                    <img src="${BASE_PATH}/assets/google.svg" alt="Google icon" class="w-5 h-5 mr-3">
                     Sign in with Google
                 </button>
             </div>
@@ -202,26 +205,24 @@ const renderLoginPage = () => {
 // Render Sign Up Page
 const renderSignupPage = () => {
     appContainer.innerHTML = `
-       <div class="flex items-center justify-center min-h-screen">
-            <div class="px-8 py-10 text-left glass-panel w-full max-w-md">
-                <h3 class="text-2xl font-bold text-center text-white">Create an Account</h3>
+       <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="px-8 py-10 text-left ${panelClasses} w-full max-w-md">
+                <h3 class="text-2xl font-bold text-center text-gray-800">Create an Account</h3>
                 <form id="signup-form">
                     <div class="mt-4">
                         <div>
-                            <label class="block text-gray-200" for="email">Email</label>
-                            <input type="email" placeholder="Email" id="signup-email" required
-                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <label class="block text-gray-700 font-medium" for="email">Email</label>
+                            <input type="email" placeholder="you@example.com" id="signup-email" required class="${inputClasses}">
                         </div>
                         <div class="mt-4">
-                            <label class="block text-gray-200">Password</label>
-                            <input type="password" placeholder="Password" id="signup-password" required
-                                class="w-full px-4 py-2 mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <label class="block text-gray-700 font-medium">Password</label>
+                            <input type="password" placeholder="Password (6+ characters)" id="signup-password" required class="${inputClasses}">
                         </div>
                         <div class="flex">
-                            <button type="submit" class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Sign Up</button>
+                            <button type="submit" class="${primaryButtonClasses}">Sign Up</button>
                         </div>
-                        <div class="text-center mt-2">
-                           <a href="/login" data-link class="text-sm text-blue-300 hover:underline">Already have an account? Log in</a>
+                        <div class="text-center mt-4">
+                           <a href="/login" data-link class="text-sm text-sky-700 hover:underline">Already have an account? Log in</a>
                         </div>
                     </div>
                 </form>
@@ -233,26 +234,26 @@ const renderSignupPage = () => {
 // Render Dashboard
 const renderDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
+        <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">TutorTrack</h1>
-                <div>
-                    <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
+                <h1 class="text-2xl font-bold text-gray-800">TutorTrack</h1>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
                 </div>
             </div>
         </header>
-        <main class="container mx-auto px-6 py-8">
+        <main class="container mx-auto px-4 sm:px-6 py-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-white">My Students</h2>
+                <h2 class="text-3xl font-semibold text-gray-800">My Students</h2>
                 <div>
-                     <a href="/archived" data-link class="text-blue-300 hover:underline mr-4">View Archived</a>
-                     <button id="add-student-btn" class="px-6 py-2 bg-green-500/80 text-white rounded-lg hover:bg-green-500">+ Add Student</button>
+                     <a href="/archived" data-link class="text-sky-700 hover:underline font-medium mr-4">View Archived</a>
+                     <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Add Student</button>
                 </div>
             </div>
             <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Student cards will be inserted here -->
-                <p>Loading students...</p>
+                <p class="text-gray-600">Loading students...</p>
             </div>
         </main>
     `;
@@ -264,7 +265,7 @@ const renderDashboardPage = () => {
         if (!studentsList) return; // Exit if the page has changed
 
         if (querySnapshot.empty) {
-            studentsList.innerHTML = `<div class="glass-panel p-6 col-span-full"><p class="text-gray-200">You haven't added any students yet. Click "Add Student" to get started!</p></div>`;
+            studentsList.innerHTML = `<div class="${panelClasses} p-6 col-span-full"><p class="text-gray-700">You haven't added any students yet. Click "Add Student" to get started!</p></div>`;
             return;
         }
 
@@ -302,16 +303,16 @@ const renderDashboardPage = () => {
                 .map(d => formatDateTime(d));
 
             const studentCard = document.createElement('div');
-            studentCard.className = 'glass-panel p-6 hover:bg-white/20 cursor-pointer';
+            studentCard.className = `${panelClasses} p-6 transition-transform transform hover:-translate-y-1 hover:shadow-xl cursor-pointer`;
             studentCard.dataset.id = student.id;
             studentCard.innerHTML = `
-                <h3 class="text-xl font-bold text-white">${student.name}</h3>
-                <p class="text-gray-300">${student.subject}</p>
+                <h3 class="text-xl font-bold text-gray-800">${student.name}</h3>
+                <p class="text-gray-600">${student.subject}</p>
                 <div class="mt-4">
-                    <h4 class="text-sm font-semibold text-gray-400 uppercase">Upcoming Sessions</h4>
+                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Upcoming Sessions</h4>
                     ${upcomingDates.length > 0
-                ? `<p class="text-gray-200">${upcomingDates.slice(0, 3).join('<br>')}</p>`
-                : `<p class="text-gray-400 text-sm">No upcoming sessions scheduled.</p>`
+                ? `<p class="text-gray-700 mt-1">${upcomingDates.slice(0, 3).join('<br>')}</p>`
+                : `<p class="text-gray-500 text-sm mt-1">No upcoming sessions scheduled.</p>`
             }
                 </div>
             `;
@@ -324,22 +325,21 @@ const renderDashboardPage = () => {
 // Render Archived Page
 const renderArchivedDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
+        <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                 <a href="/" data-link class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
-                <div>
-                    <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
+                 <a href="/" data-link" class="text-sky-700 hover:underline font-medium">&larr; Back to Dashboard</a>
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
                 </div>
             </div>
         </header>
-        <main class="container mx-auto px-6 py-8">
+        <main class="container mx-auto px-4 sm:px-6 py-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-white">Archived Students</h2>
+                <h2 class="text-3xl font-semibold text-gray-800">Archived Students</h2>
             </div>
             <div id="archived-students-list" class="space-y-4">
-                <!-- Archived student cards will be inserted here -->
-                <p>Loading archived students...</p>
+                <p class="text-gray-600">Loading archived students...</p>
             </div>
         </main>
     `;
@@ -349,23 +349,23 @@ const renderArchivedDashboardPage = () => {
         const studentsList = document.getElementById('archived-students-list');
         if (studentsList) {
             if (querySnapshot.empty) {
-                studentsList.innerHTML = `<div class="glass-panel p-6"><p class="text-gray-200">You have no archived students.</p></div>`;
+                studentsList.innerHTML = `<div class="${panelClasses} p-6"><p class="text-gray-700">You have no archived students.</p></div>`;
                 return;
             }
             studentsList.innerHTML = ''; // Clear list
             querySnapshot.forEach((doc) => {
                 const student = {id: doc.id, ...doc.data()};
                 const studentCard = document.createElement('div');
-                studentCard.className = 'glass-panel p-4 flex justify-between items-center';
+                studentCard.className = `${panelClasses} p-4 flex justify-between items-center`;
                 studentCard.dataset.id = student.id;
                 studentCard.innerHTML = `
                     <div>
-                        <h3 class="text-lg font-bold text-white">${student.name}</h3>
-                        <p class="text-gray-300">${student.subject}</p>
+                        <h3 class="text-lg font-bold text-gray-800">${student.name}</h3>
+                        <p class="text-gray-600">${student.subject}</p>
                     </div>
                     <div class="space-x-2">
-                        <button data-action="restore-student" data-id="${student.id}" class="px-4 py-2 bg-green-500/80 text-white rounded hover:bg-green-500">Restore</button>
-                        <button data-action="delete-student" data-id="${student.id}" class="px-4 py-2 bg-red-600/80 text-white rounded hover:bg-red-700">Delete Permanently</button>
+                        <button data-action="restore-student" data-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">Restore</button>
+                        <button data-action="delete-student" data-id="${student.id}" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 font-semibold">Delete Permanently</button>
                     </div>
                 `;
                 studentsList.appendChild(studentCard);
@@ -376,7 +376,7 @@ const renderArchivedDashboardPage = () => {
 
 // Render Student Detail Page
 const renderStudentDetailPage = async (studentId) => {
-    appContainer.innerHTML = `<p class="text-center mt-10">Loading student details...</p>`;
+    appContainer.innerHTML = `<p class="text-center mt-10 text-gray-700">Loading student details...</p>`;
 
     try {
         const studentRef = doc(db, 'students', studentId);
@@ -391,57 +391,51 @@ const renderStudentDetailPage = async (studentId) => {
 
         // Render the main page structure
         appContainer.innerHTML = `
-            <header class="glass-panel sticky top-4 mx-4 md:mx-auto max-w-6xl z-10">
+            <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
                 <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                     <a href="/" data-link class="text-blue-300 hover:underline">&larr; Back to Dashboard</a>
-                    <div>
-                        <span class="text-gray-200 mr-4">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                        <button id="logout-btn" class="px-4 py-2 bg-red-500/80 text-white rounded-lg hover:bg-red-500">Logout</button>
+                     <a href="/" data-link class="text-sky-700 hover:underline font-medium">&larr; Back to Dashboard</a>
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                        <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
                     </div>
                 </div>
             </header>
-            <main class="container mx-auto px-6 py-8">
-                <div class="flex justify-between items-center mb-6">
+            <main class="container mx-auto px-4 sm:px-6 py-8">
+                <div class="flex justify-between items-start mb-6">
                     <div>
-                        <h2 class="text-3xl font-bold text-white">${student.name}</h2>
-                        <p class="text-xl text-gray-300">${student.subject}</p>
+                        <h2 class="text-3xl font-bold text-gray-800">${student.name}</h2>
+                        <p class="text-xl text-gray-600">${student.subject}</p>
                     </div>
                     <div>
-                        <button data-action="edit-student" data-id="${student.id}" class="px-4 py-2 bg-yellow-500/80 text-white rounded hover:bg-yellow-600 mr-2">Edit</button>
-                        <button data-action="archive-student" data-id="${student.id}" class="px-4 py-2 bg-gray-500/80 text-white rounded hover:bg-gray-600">Archive</button>
+                        <button data-action="edit-student" data-id="${student.id}" class="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 font-semibold mr-2">Edit</button>
+                        <button data-action="archive-student" data-id="${student.id}" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 font-semibold">Archive</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Column 1: Syllabus & Sessions -->
                     <div class="lg:col-span-1 space-y-8">
-                        <div class="glass-panel p-6">
-                            <h3 class="text-xl font-semibold mb-4 text-white">Syllabus Tracker</h3>
-                            <ul id="syllabus-list" class="space-y-2">
-                               <!-- This container will be filled dynamically -->
-                            </ul>
+                        <div class="${panelClasses} p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Syllabus Tracker</h3>
+                            <ul id="syllabus-list" class="space-y-2"></ul>
                             <form id="add-topic-form" class="mt-4 flex">
-                                <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 border-0 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600">Add</button>
+                                <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 bg-white/60 border border-gray-300 rounded-l-md text-zinc-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
+                                <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded-r-md hover:bg-sky-700 font-semibold">Add</button>
                             </form>
                         </div>
-                        <div class="glass-panel p-6">
-                            <h3 class="text-xl font-semibold mb-4 text-white">Scheduled Sessions</h3>
-                            <ul id="scheduled-sessions-list" class="space-y-2">
-                                <!-- Dates will be loaded here -->
-                            </ul>
+                        <div class="${panelClasses} p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">Scheduled Sessions</h3>
+                            <ul id="scheduled-sessions-list" class="space-y-2"></ul>
                         </div>
                     </div>
 
                     <!-- Column 2: Session Log -->
-                    <div class="glass-panel p-6 lg:col-span-2">
+                    <div class="${panelClasses} p-6 lg:col-span-2">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-semibold text-white">Session Log</h3>
-                            <button id="log-session-btn" class="px-4 py-2 bg-green-500/80 text-white rounded hover:bg-green-600">+ Log Session</button>
+                            <h3 class="text-xl font-semibold text-gray-800">Session Log</h3>
+                            <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Log Session</button>
                         </div>
-                        <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                            <!-- Session entries will be loaded here -->
-                        </div>
+                        <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
                     </div>
                 </div>
             </main>
@@ -465,10 +459,10 @@ const renderStudentDetailPage = async (studentId) => {
                     .sort((a, b) => a - b);
 
                 if (upcomingDates.length === 0) {
-                    sessionsListElement.innerHTML = `<li class="text-gray-400">No upcoming sessions.</li>`;
+                    sessionsListElement.innerHTML = `<li class="text-gray-500">No upcoming sessions.</li>`;
                 } else {
                     sessionsListElement.innerHTML = upcomingDates.map(date =>
-                        `<li class="p-2 rounded bg-black/20 text-gray-200">${formatDateTime(date)}</li>`,
+                        `<li class="p-2 rounded bg-black/5 text-gray-700">${formatDateTime(date)}</li>`,
                     ).join('');
                 }
             }
@@ -485,7 +479,7 @@ const renderStudentDetailPage = async (studentId) => {
             const sessionLogList = document.getElementById('session-log-list');
             if (sessionLogList) {
                 if (querySnapshot.empty) {
-                    sessionLogList.innerHTML = `<p class="text-gray-300">No sessions logged yet.</p>`;
+                    sessionLogList.innerHTML = `<p class="text-gray-600">No sessions logged yet.</p>`;
                     return;
                 }
                 sessionLogList.innerHTML = querySnapshot.docs.map(doc => {
@@ -496,16 +490,16 @@ const renderStudentDetailPage = async (studentId) => {
                         .join(', ');
 
                     return `
-                    <div class="border-b border-white/20 pb-4">
+                    <div class="border-b border-black/10 pb-4">
                         <div class="flex justify-between items-start">
                              <div>
-                                <p class="font-bold text-white">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
+                                <p class="font-bold text-gray-800">${session.date.toDate().toLocaleDateString()} - ${session.duration} mins</p>
                              </div>
                              <button data-action="delete-session" data-session-id="${session.id}" class="text-red-400 hover:text-red-600 font-bold text-2xl leading-none">&times;</button>
                         </div>
-                        <p class="text-sm mt-2 text-gray-200"><strong class="font-semibold text-gray-100">Notes:</strong> ${session.notes}</p>
-                        <p class="text-sm mt-1 text-gray-200"><strong class="font-semibold text-gray-100">Next Steps:</strong> ${session.nextSteps}</p>
-                        <p class="text-sm mt-1 text-gray-200"><strong class="font-semibold text-gray-100">Topics:</strong> ${topicsCovered || 'None'}</p>
+                        <p class="text-sm mt-2 text-gray-700"><strong class="font-semibold text-gray-800">Notes:</strong> ${session.notes || 'N/A'}</p>
+                        <p class="text-sm mt-1 text-gray-700"><strong class="font-semibold text-gray-800">Next Steps:</strong> ${session.nextSteps || 'N/A'}</p>
+                        <p class="text-sm mt-1 text-gray-700"><strong class="font-semibold text-gray-800">Topics:</strong> ${topicsCovered || 'None'}</p>
                     </div>
                 `;
                 }).join('');
@@ -520,19 +514,19 @@ const renderStudentDetailPage = async (studentId) => {
 
 const renderSyllabus = (syllabus, studentId) => {
     if (!syllabus || syllabus.length === 0) {
-        return `<li class="text-gray-400">No topics added to the syllabus yet.</li>`;
+        return `<li class="text-gray-500">No topics added to the syllabus yet.</li>`;
     }
     return syllabus.map(topic => `
-        <li class="flex justify-between items-center p-2 rounded hover:bg-black/20 text-gray-200">
-            <span class="flex-grow">${topic.title}</span>
-            <div class="flex items-center space-x-1 flex-shrink-0 ml-4">
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Not Started" class="status-btn text-xs p-2 aspect-square rounded bg-gray-200 text-white ${topic.status === TOPIC_STATUS.NOT_STARTED ? '' : 'opacity-50 scale-75'}"><img src="${BASE_PATH}/assets/circle.svg" alt=""></button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="In Progress" class="status-btn text-xs p-2 aspect-square rounded bg-yellow-500 text-white ${topic.status === TOPIC_STATUS.IN_PROGRESS ? '' : 'opacity-50 scale-75'}"><img src="${BASE_PATH}/assets/loader.svg" alt=""></button>
-                <button data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
-                    data-status="Completed" class="status-btn text-xs p-2 aspect-square rounded bg-green-500 text-white ${topic.status === TOPIC_STATUS.COMPLETED ? '' : 'opacity-50 scale-75'}"><img src="${BASE_PATH}/assets/check-circle.svg" alt=""></button>
-                <button data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
+        <li class="flex justify-between items-center p-2 rounded hover:bg-black/10 text-gray-700">
+            <span class="flex-grow mr-4">${topic.title}</span>
+            <div class="flex items-center space-x-1 flex-shrink-0">
+                <button title="Not Started" data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
+                    data-status="Not Started" class="status-btn p-1.5 rounded-full bg-gray-300 ${topic.status === TOPIC_STATUS.NOT_STARTED ? 'ring-2 ring-offset-1 ring-gray-500' : 'opacity-50'}"><img src="${BASE_PATH}/assets/circle.svg" class="w-4 h-4" alt=""></button>
+                <button title="In Progress" data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
+                    data-status="In Progress" class="status-btn p-1.5 rounded-full bg-yellow-400 ${topic.status === TOPIC_STATUS.IN_PROGRESS ? 'ring-2 ring-offset-1 ring-yellow-600' : 'opacity-50'}"><img src="${BASE_PATH}/assets/loader.svg" class="w-4 h-4" alt=""></button>
+                <button title="Completed" data-action="update-topic-status" data-student-id="${studentId}" data-topic-id="${topic.id}"
+                    data-status="Completed" class="status-btn p-1.5 rounded-full bg-green-500 ${topic.status === TOPIC_STATUS.COMPLETED ? 'ring-2 ring-offset-1 ring-green-700' : 'opacity-50'}"><img src="${BASE_PATH}/assets/check-circle.svg" class="w-4 h-4" alt=""></button>
+                <button title="Delete Topic" data-action="delete-topic" data-student-id="${studentId}" data-topic-id="${topic.id}" class="ml-2 text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>
             </div>
         </li>
     `).join('');
@@ -542,12 +536,12 @@ const renderSyllabus = (syllabus, studentId) => {
 
 const showModal = (title, content) => {
     const modal = document.createElement('div');
-    modal.className = 'modal-backdrop';
+    modal.className = 'fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center p-4 z-50';
     modal.innerHTML = `
-        <div class="modal-content glass-panel">
+        <div class="modal-content ${panelClasses} p-8 w-full max-w-lg">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold text-white">${title}</h2>
-                <button data-action="close-modal" class="text-red-400 hover:text-red-600 text-4xl font-bold leading-none">&times;</button>
+                <h2 class="text-2xl font-bold text-gray-800">${title}</h2>
+                <button data-action="close-modal" class="text-red-500 hover:text-red-700 text-4xl font-bold leading-none">&times;</button>
             </div>
             ${content}
         </div>
@@ -556,7 +550,7 @@ const showModal = (title, content) => {
 };
 
 const closeModal = () => {
-    const modal = document.querySelector('.modal-backdrop');
+    const modal = document.querySelector('.fixed.inset-0');
     if (modal) {
         modal.remove();
     }
@@ -566,25 +560,23 @@ const showAddStudentModal = () => {
     const content = `
         <form id="add-student-form">
             <div class="mb-4">
-                <label class="block text-gray-200">Student Name</label>
-                <input type="text" name="name" class="w-full p-2 rounded" required>
+                <label class="block text-gray-700 font-medium">Student Name</label>
+                <input type="text" name="name" class="${inputClasses}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Subject</label>
-                <input type="text" name="subject" class="w-full p-2 rounded" required>
+                <label class="block text-gray-700 font-medium">Subject</label>
+                <input type="text" name="subject" class="${inputClasses}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Contact Info (Optional)</label>
-                <input type="text" name="contact" class="w-full p-2 rounded">
+                <label class="block text-gray-700 font-medium">Contact Info (Optional)</label>
+                <input type="text" name="contact" class="${inputClasses}">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Scheduled Dates (Optional)</label>
-                <div id="dates-container" class="space-y-2">
-                    <!-- Date inputs will be added here dynamically -->
-                </div>
-                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-300 hover:underline">+ Add another date</button>
+                <label class="block text-gray-700 font-medium">Scheduled Dates (Optional)</label>
+                <div id="dates-container" class="space-y-2"></div>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-sky-700 hover:underline">+ Add another date</button>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Student</button>
+            <button type="submit" class="w-full bg-sky-600 text-white p-2 rounded-lg shadow hover:bg-sky-700 font-semibold">Add Student</button>
         </form>
     `;
     showModal('Add New Student', content);
@@ -593,34 +585,36 @@ const showAddStudentModal = () => {
 const showLogSessionForm = (student) => {
     const studentId = student.id;
     const syllabusOptions = (student.syllabus || []).map(topic =>
-        `<label class="flex items-center text-gray-200"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2">${topic.title}</label>`,
+        `<label class="flex items-center text-gray-700 p-1.5 rounded hover:bg-black/10"><input type="checkbox" name="topics" value="${topic.id}" class="mr-2 h-4 w-4 rounded border-gray-400 text-sky-600 focus:ring-sky-500">${topic.title}</label>`,
     ).join('');
 
     const content = `
         <form id="log-session-form" data-student-id="${studentId}">
-            <div class="mb-4">
-                <label class="block text-gray-200">Date</label>
-                <input type="date" name="date" class="w-full p-2 rounded" required>
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-200">Duration (minutes)</label>
-                <input type="number" name="duration" class="w-full p-2 rounded" required>
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-200">Session Notes</label>
-                <textarea name="notes" class="w-full p-2 rounded" rows="3"></textarea>
-            </div>
-             <div class="mb-4">
-                <label class="block text-gray-200">Topics Covered</label>
-                <div class="max-h-32 overflow-y-auto border border-white/20 p-2 rounded">
-                    ${syllabusOptions || '<p class="text-sm text-gray-400">No syllabus topics available.</p>'}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-gray-700 font-medium">Date</label>
+                    <input type="date" name="date" class="${inputClasses}" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Duration (minutes)</label>
+                    <input type="number" name="duration" class="${inputClasses}" required>
                 </div>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Next Steps / Homework</label>
-                <textarea name="nextSteps" class="w-full p-2 rounded" rows="2"></textarea>
+                <label class="block text-gray-700 font-medium">Session Notes</label>
+                <textarea name="notes" class="${inputClasses}" rows="3"></textarea>
             </div>
-            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Log Session</button>
+             <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Topics Covered</label>
+                <div class="max-h-32 overflow-y-auto border border-gray-300 bg-white/50 p-2 rounded-md mt-2">
+                    ${syllabusOptions || '<p class="text-sm text-gray-500">No syllabus topics available.</p>'}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Next Steps / Homework</label>
+                <textarea name="nextSteps" class="${inputClasses}" rows="2"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded-lg shadow hover:bg-green-600 font-semibold">Log Session</button>
         </form>
     `;
     showModal('Log New Session', content);
@@ -630,33 +624,33 @@ const showEditStudentModal = (student) => {
     const existingDatesHTML = (student.dates || [])
         .map(date => `
             <div class="flex items-center space-x-2 date-input-row">
-                <input type="datetime-local" name="dates" class="w-full p-2 rounded" value="${formatDateTimeForInput(new Date(date))}">
-                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-400 hover:text-red-600 font-bold">&times;</button>
+                <input type="datetime-local" name="dates" class="${inputClasses} !mt-0" value="${formatDateTimeForInput(new Date(date))}">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold text-2xl">&times;</button>
             </div>
         `).join('');
 
     const content = `
         <form id="edit-student-form" data-id="${student.id}">
             <div class="mb-4">
-                <label class="block text-gray-200">Student Name</label>
-                <input type="text" name="name" class="w-full p-2 rounded" value="${student.name}" required>
+                <label class="block text-gray-700 font-medium">Student Name</label>
+                <input type="text" name="name" class="${inputClasses}" value="${student.name}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Subject</label>
-                <input type="text" name="subject" class="w-full p-2 rounded" value="${student.subject}" required>
+                <label class="block text-gray-700 font-medium">Subject</label>
+                <input type="text" name="subject" class="${inputClasses}" value="${student.subject}" required>
             </div>
             <div class="mb-4">
-                <label class="block text-gray-200">Contact Info (Optional)</label>
-                <input type="text" name="contact" class="w-full p-2 rounded" value="${student.contact || ''}">
+                <label class="block text-gray-700 font-medium">Contact Info (Optional)</label>
+                <input type="text" name="contact" class="${inputClasses}" value="${student.contact || ''}">
             </div>
              <div class="mb-4">
-                <label class="block text-gray-200">Scheduled Dates (Optional)</label>
-                <div id="dates-container" class="space-y-2">
+                <label class="block text-gray-700 font-medium">Scheduled Dates (Optional)</label>
+                <div id="dates-container" class="space-y-2 mt-2">
                     ${existingDatesHTML}
                 </div>
-                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-blue-300 hover:underline">+ Add another date</button>
+                <button type="button" data-action="add-date-input" class="mt-2 text-sm text-sky-700 hover:underline">+ Add another date</button>
             </div>
-            <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Save Changes</button>
+            <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded-lg shadow hover:bg-yellow-600 font-semibold">Save Changes</button>
         </form>
     `;
     showModal('Edit Student Details', content);
@@ -671,9 +665,9 @@ document.addEventListener('click', async (e) => {
 
     const action = target?.dataset.action;
 
-    if (e.target.matches('[data-link]')) {
+    if (e.target.closest('[data-link]')) {
         e.preventDefault();
-        navigateTo(e.target.getAttribute('href'));
+        navigateTo(e.target.closest('[data-link]').getAttribute('href'));
     }
 
     if (e.target.id === 'logout-btn') handleLogOut();
@@ -687,8 +681,8 @@ document.addEventListener('click', async (e) => {
             const dateRow = document.createElement('div');
             dateRow.className = 'flex items-center space-x-2 date-input-row';
             dateRow.innerHTML = `
-                <input type="datetime-local" name="dates" class="w-full p-2 rounded">
-                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-400 hover:text-red-600 font-bold">&times;</button>
+                <input type="datetime-local" name="dates" class="${inputClasses} !mt-0">
+                <button type="button" data-action="remove-date-input" class="px-2 py-1 text-red-500 hover:text-red-700 font-bold text-2xl">&times;</button>
             `;
             container.appendChild(dateRow);
         }
@@ -878,13 +872,13 @@ document.addEventListener('submit', async (e) => {
 
     // Add Syllabus Topic
     if (e.target.id === 'add-topic-form') {
-        const studentId = window.location.pathname.split('/')[3];
+        const studentId = window.location.pathname.split('/').pop();
         const title = e.target.querySelector('#new-topic-title').value;
         if (title) {
             const studentRef = doc(db, 'students', studentId);
             await updateDoc(studentRef, {
                 syllabus: arrayUnion({
-                    id: crypto.randomUUID(), // Simple UUID for topics
+                    id: crypto.randomUUID(),
                     title: title,
                     status: TOPIC_STATUS.NOT_STARTED,
                 }),

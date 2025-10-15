@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600&display=swap');
+
+body {
+    font-family: 'Poppins', 'Vazirmatn', sans-serif;
+
+    background: linear-gradient(135deg, #a3bff5, #a8d4e4, #b8f2e0) fixed;
+
+    color: #1f2937;
+}
+
+button, a, input {
+    transition: all 0.2s ease-in-out;
+}
