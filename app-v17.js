@@ -271,7 +271,7 @@ const renderDashboardPage = () => {
 
         const students = [];
         querySnapshot.forEach((doc) => {
-            students.push({ id: doc.id, ...doc.data() });
+            students.push({id: doc.id, ...doc.data()});
         });
 
         const getNextSession = (student) => {
@@ -374,6 +374,9 @@ const renderArchivedDashboardPage = () => {
     });
 };
 
+// Showdown converter instance
+const markdownConverter = new showdown.Converter();
+
 // Render Student Detail Page
 const renderStudentDetailPage = async (studentId) => {
     appContainer.innerHTML = `<p class="text-center mt-10 text-gray-700">Loading student details...</p>`;
@@ -429,13 +432,20 @@ const renderStudentDetailPage = async (studentId) => {
                         </div>
                     </div>
 
-                    <!-- Column 2: Session Log -->
-                    <div class="${panelClasses} p-6 lg:col-span-2">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-xl font-semibold text-gray-800">Session Log</h3>
-                            <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Log Session</button>
+                    <!-- Column 2: Notes & Session Log -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <div id="student-notes-container" class="${panelClasses} p-6">
+                            <!-- Note content will be rendered here by onSnapshot -->
                         </div>
-                        <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
+
+                        <!-- Session Log Panel -->
+                        <div class="${panelClasses} p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-800">Session Log</h3>
+                                <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Log Session</button>
+                            </div>
+                            <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -446,11 +456,20 @@ const renderStudentDetailPage = async (studentId) => {
         });
 
         onSnapshot(studentRef, (docSnap) => {
-            const updatedStudent = docSnap.data();
+            const updatedStudent = {id: docSnap.id, ...docSnap.data()};
+
+            // Render Notes
+            const notesContainer = document.getElementById('student-notes-container');
+            if (notesContainer) {
+                renderNotesView(updatedStudent);
+            }
+
+            // Render Syllabus
             const syllabusListElement = document.getElementById('syllabus-list');
             if (syllabusListElement) {
                 syllabusListElement.innerHTML = renderSyllabus(updatedStudent.syllabus || [], studentId);
             }
+            // Render Sessions
             const sessionsListElement = document.getElementById('scheduled-sessions-list');
             if (sessionsListElement) {
                 const upcomingDates = (updatedStudent.dates || [])
@@ -510,6 +529,47 @@ const renderStudentDetailPage = async (studentId) => {
         console.error('Error rendering student page:', error);
         appContainer.innerHTML = `<h1>Something went wrong.</h1>`;
     }
+};
+
+// notes view (display mode)
+const renderNotesView = (student) => {
+    const notesContainer = document.getElementById('student-notes-container');
+    if (!notesContainer) return;
+
+    const notesMarkdown = student.notes || '';
+    const notesHtml = notesMarkdown
+        ? markdownConverter.makeHtml(notesMarkdown)
+        : '<p class="text-gray-500">No notes yet. Click Edit to add some.</p>';
+
+    notesContainer.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">Student Notes</h3>
+            <button data-action="edit-notes" data-student-id="${student.id}" class="px-3 py-1 bg-sky-500 text-white text-sm rounded-md shadow-sm hover:bg-sky-600 font-semibold">Edit</button>
+        </div>
+        <div class="prose max-w-none text-gray-800 prose-li:marker:text-gray-700">
+            ${notesHtml}
+        </div>
+    `;
+};
+
+
+// notes editor view (edit mode)
+const renderNotesEditView = (student) => {
+    const notesContainer = document.getElementById('student-notes-container');
+    if (!notesContainer) return;
+
+    const currentNotes = student.notes || '';
+
+    notesContainer.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">Editing Notes</h3>
+        </div>
+        <textarea id="notes-editor" class="${inputClasses} !mt-0" rows="10">${currentNotes}</textarea>
+        <div class="flex justify-end gap-2 mt-4">
+             <button data-action="cancel-edit-notes" data-student-id="${student.id}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancel</button>
+             <button data-action="save-notes" data-student-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">Save Notes</button>
+        </div>
+    `;
 };
 
 const renderSyllabus = (syllabus, studentId) => {
@@ -692,6 +752,32 @@ document.addEventListener('click', async (e) => {
         target.closest('.date-input-row').remove();
     }
 
+    if (action === 'edit-notes') {
+        const {studentId} = target.dataset;
+        const studentRef = doc(db, 'students', studentId);
+        const studentSnap = await getDoc(studentRef);
+        if (studentSnap.exists()) {
+            renderNotesEditView({id: studentSnap.id, ...studentSnap.data()});
+        }
+    }
+
+    if (action === 'save-notes') {
+        const {studentId} = target.dataset;
+        const newNotes = document.getElementById('notes-editor').value;
+        const studentRef = doc(db, 'students', studentId);
+        await updateDoc(studentRef, {notes: newNotes});
+        // onSnapshot will automatically re-render the view mode
+    }
+
+    if (action === 'cancel-edit-notes') {
+        const {studentId} = target.dataset;
+        const studentRef = doc(db, 'students', studentId);
+        const studentSnap = await getDoc(studentRef);
+        if (studentSnap.exists()) {
+            renderNotesView({id: studentSnap.id, ...studentSnap.data()});
+        }
+    }
+
     if (action === 'edit-student') {
         const studentId = target.closest('[data-id]').dataset.id;
         const studentRef = doc(db, 'students', studentId);
@@ -834,6 +920,7 @@ document.addEventListener('submit', async (e) => {
             tutorId: currentUser.uid,
             status: STATUS.ACTIVE,
             syllabus: [],
+            notes: '',
         };
         await addDoc(collection(db, 'students'), studentData);
         closeModal();
