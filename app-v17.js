@@ -160,6 +160,7 @@ window.onpopstate = handleRouteChange;
 const panelClasses = 'bg-white/40 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg';
 const inputClasses = 'w-full px-4 py-2 mt-2 bg-white/60 border border-gray-300 rounded-md text-zinc-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500';
 const primaryButtonClasses = 'w-full px-6 py-2.5 mt-4 font-semibold text-white bg-sky-600 rounded-lg shadow-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500';
+const backLinkClasses = 'text-sky-700 hover:underline font-medium flex justify-between items-center';
 
 // Render Login Page
 const renderLoginPage = () => {
@@ -327,7 +328,11 @@ const renderArchivedDashboardPage = () => {
     appContainer.innerHTML = `
         <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
             <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                 <a href="/" data-link" class="text-sky-700 hover:underline font-medium">&larr; Back to Dashboard</a>
+                <a href="/" data-link class="${backLinkClasses}">
+                    <svg width="24" height="24">
+                        <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
+                    </svg>
+                Back to Dashboard</a>
                 <div class="flex items-center gap-4">
                     <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
                     <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
@@ -396,7 +401,11 @@ const renderStudentDetailPage = async (studentId) => {
         appContainer.innerHTML = `
             <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
                 <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                     <a href="/" data-link class="text-sky-700 hover:underline font-medium">&larr; Back to Dashboard</a>
+                    <a href="/" data-link class="${backLinkClasses}">
+                        <svg width="24" height="24">
+                            <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
+                        </svg>
+                    Back to Dashboard</a>
                     <div class="flex items-center gap-4">
                         <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
                         <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
