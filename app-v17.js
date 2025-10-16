@@ -420,7 +420,7 @@ const renderStudentDetailPage = async (studentId) => {
                     <div class="lg:col-span-1 space-y-8">
                         <div class="${panelClasses} p-6">
                             <h3 class="text-xl font-semibold mb-4 text-gray-800">Syllabus Tracker</h3>
-                            <ul id="syllabus-list" class="space-y-2"></ul>
+                            <ul id="syllabus-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-2"></ul>
                             <form id="add-topic-form" class="mt-4 flex">
                                 <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 bg-white/60 border border-gray-300 rounded-l-md text-zinc-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
                                 <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded-r-md hover:bg-sky-700 font-semibold">Add</button>
@@ -428,12 +428,13 @@ const renderStudentDetailPage = async (studentId) => {
                         </div>
                         <div class="${panelClasses} p-6">
                             <h3 class="text-xl font-semibold mb-4 text-gray-800">Scheduled Sessions</h3>
-                            <ul id="scheduled-sessions-list" class="space-y-2"></ul>
+                            <ul id="scheduled-sessions-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-2"></ul>
                         </div>
                     </div>
 
                     <!-- Column 2: Notes & Session Log -->
                     <div class="lg:col-span-2 space-y-8">
+                        <!-- Student Notes Panel -->
                         <div id="student-notes-container" class="${panelClasses} p-6">
                             <!-- Note content will be rendered here by onSnapshot -->
                         </div>
@@ -444,7 +445,7 @@ const renderStudentDetailPage = async (studentId) => {
                                 <h3 class="text-xl font-semibold text-gray-800">Session Log</h3>
                                 <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Log Session</button>
                             </div>
-                            <div id="session-log-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2"></div>
+                            <div id="session-log-list" class="space-y-4 max-h-[45vh] overflow-y-auto pr-2"></div>
                         </div>
                     </div>
                 </div>
@@ -546,8 +547,10 @@ const renderNotesView = (student) => {
             <h3 class="text-xl font-semibold text-gray-800">Student Notes</h3>
             <button data-action="edit-notes" data-student-id="${student.id}" class="px-3 py-1 bg-sky-500 text-white text-sm rounded-md shadow-sm hover:bg-sky-600 font-semibold">Edit</button>
         </div>
-        <div class="prose max-w-none text-gray-800 prose-li:marker:text-gray-700">
-            ${notesHtml}
+        <div class="max-h-[45vh] overflow-y-auto pr-2">
+            <div class="prose max-w-none text-gray-800  prose-li:marker:text-gray-700">
+                ${notesHtml}
+            </div>
         </div>
     `;
 };
@@ -564,7 +567,7 @@ const renderNotesEditView = (student) => {
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">Editing Notes</h3>
         </div>
-        <textarea id="notes-editor" class="${inputClasses} !mt-0" rows="10">${currentNotes}</textarea>
+        <textarea id="notes-editor" class="${inputClasses} !mt-0 max-h-[45vh]" rows="10">${currentNotes}</textarea>
         <div class="flex justify-end gap-2 mt-4">
              <button data-action="cancel-edit-notes" data-student-id="${student.id}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancel</button>
              <button data-action="save-notes" data-student-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">Save Notes</button>
