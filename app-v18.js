@@ -39,6 +39,25 @@ import {
 
 const appContainer = document.getElementById('app');
 let currentUser = null;
+let lastScrollTop = 0;
+
+window.addEventListener('scroll', () => {
+    // Find the header on the page
+    const header = document.getElementById('app-header');
+    if (!header) return;
+
+    let scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop && scrollTop > 10) {
+        // Scrolling Down: Hide the header
+        header.classList.add('-translate-y-[150%]');
+    } else {
+        // Scrolling Up: Show the header
+        header.classList.remove('-translate-y-[150%]');
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+}, false);
 
 // --- AUTHENTICATION --- //
 
@@ -235,28 +254,30 @@ const renderSignupPage = () => {
 // Render Dashboard
 const renderDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
-            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">TutorTrack</h1>
-                <div class="flex items-center gap-4">
-                    <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <header id="app-header" class="sticky top-4 z-10 ${panelClasses} transition-transform duration-300">
+                <div class="px-6 py-4 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-800">TutorTrack</h1>
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                        <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
+                    </div>
                 </div>
-            </div>
-        </header>
-        <main class="container mx-auto px-4 sm:px-6 py-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-gray-800">My Students</h2>
-                <div>
-                     <a href="/archived" data-link class="text-sky-700 hover:underline font-medium mr-4">View Archived</a>
-                     <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Add Student</button>
+            </header>
+            <main class="py-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">My Students</h2>
+                    <div>
+                        <a href="/archived" data-link class="text-sky-700 hover:underline font-medium mr-4">View Archived</a>
+                        <button id="add-student-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Add Student</button>
+                    </div>
                 </div>
-            </div>
-            <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Student cards will be inserted here -->
-                <p class="text-gray-600">Loading students...</p>
-            </div>
-        </main>
+                <div id="students-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Student cards will be inserted here -->
+                    <p class="text-gray-600">Loading students...</p>
+                </div>
+            </main>
+        </div>
     `;
 
     // Fetch and display students
@@ -326,27 +347,30 @@ const renderDashboardPage = () => {
 // Render Archived Page
 const renderArchivedDashboardPage = () => {
     appContainer.innerHTML = `
-        <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
-            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <a href="/" data-link class="${backLinkClasses}">
-                    <svg width="24" height="24">
-                        <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
-                    </svg>
-                Back to Dashboard</a>
-                <div class="flex items-center gap-4">
-                    <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
-                    <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <header id="app-header" class="sticky top-4 z-10 ${panelClasses} transition-transform duration-300">
+                <div class="px-6 py-4 flex justify-between items-center">
+                    <a href="/" data-link class="${backLinkClasses}">
+                        <svg width="24" height="24">
+                            <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
+                        </svg>
+                        Back to Dashboard
+                    </a>
+                    <div class="flex items-center gap-4">
+                        <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
+                        <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
+                    </div>
                 </div>
-            </div>
-        </header>
-        <main class="container mx-auto px-4 sm:px-6 py-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-semibold text-gray-800">Archived Students</h2>
-            </div>
-            <div id="archived-students-list" class="space-y-4">
-                <p class="text-gray-600">Loading archived students...</p>
-            </div>
-        </main>
+            </header>
+            <main class="py-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-semibold text-gray-800">Archived Students</h2>
+                </div>
+                <div id="archived-students-list" class="space-y-4">
+                    <p class="text-gray-600">Loading archived students...</p>
+                </div>
+            </main>
+        </div>
     `;
 
     const q = query(collection(db, 'students'), where('tutorId', '==', currentUser.uid), where('status', '==', STATUS.ARCHIVED));
@@ -399,20 +423,22 @@ const renderStudentDetailPage = async (studentId) => {
 
         // Render the main page structure
         appContainer.innerHTML = `
-            <header class="sticky top-4 mx-4 md:mx-auto max-w-6xl z-10 ${panelClasses}">
-                <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <header id="app-header" class="sticky top-4 z-10 ${panelClasses} transition-transform duration-300">
+                <div class="px-6 py-4 flex justify-between items-center">
                     <a href="/" data-link class="${backLinkClasses}">
-                        <svg width="24" height="24">
-                            <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
-                        </svg>
-                    Back to Dashboard</a>
+                       <svg width="24" height="24">
+                           <use href="${BASE_PATH}/assets/chevrons-left.svg"></use>
+                       </svg>
+                       Back to Dashboard
+                    </a>
                     <div class="flex items-center gap-4">
                         <span class="text-gray-700 hidden sm:inline">Welcome, ${currentUser.displayName || currentUser.email}</span>
                         <button id="logout-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 font-semibold">Logout</button>
                     </div>
                 </div>
             </header>
-            <main class="container mx-auto px-4 sm:px-6 py-8">
+            <main class="py-8">
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <h2 class="text-3xl font-bold text-gray-800">${student.name}</h2>
@@ -427,38 +453,39 @@ const renderStudentDetailPage = async (studentId) => {
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Column 1: Syllabus & Sessions -->
                     <div class="lg:col-span-1 space-y-8">
-                        <div class="${panelClasses} p-6">
+                        <div class="${panelClasses} p-6 max-h-[45vh] flex flex-col">
                             <h3 class="text-xl font-semibold mb-4 text-gray-800">Syllabus Tracker</h3>
-                            <ul id="syllabus-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-2"></ul>
+                            <ul id="syllabus-list" class="space-y-2 overflow-y-auto pr-2 flex-1"></ul>
                             <form id="add-topic-form" class="mt-4 flex">
                                 <input type="text" id="new-topic-title" placeholder="Add new topic" class="flex-grow px-3 py-2 bg-white/60 border border-gray-300 rounded-l-md text-zinc-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500" required>
                                 <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded-r-md hover:bg-sky-700 font-semibold">Add</button>
                             </form>
                         </div>
-                        <div class="${panelClasses} p-6">
+                        <div class="${panelClasses} p-6 max-h-[45vh] flex flex-col">
                             <h3 class="text-xl font-semibold mb-4 text-gray-800">Scheduled Sessions</h3>
-                            <ul id="scheduled-sessions-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-2"></ul>
+                            <ul id="scheduled-sessions-list" class="space-y-2 overflow-y-auto pr-2 flex-1"></ul>
                         </div>
                     </div>
 
                     <!-- Column 2: Notes & Session Log -->
                     <div class="lg:col-span-2 space-y-8">
                         <!-- Student Notes Panel -->
-                        <div id="student-notes-container" class="${panelClasses} p-6">
+                        <div id="student-notes-container" class="${panelClasses} p-6 max-h-[45vh] flex flex-col">
                             <!-- Note content will be rendered here by onSnapshot -->
                         </div>
 
                         <!-- Session Log Panel -->
-                        <div class="${panelClasses} p-6">
+                        <div class="${panelClasses} p-6 max-h-[45vh] flex flex-col">
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-xl font-semibold text-gray-800">Session Log</h3>
                                 <button id="log-session-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">+ Log Session</button>
                             </div>
-                            <div id="session-log-list" class="space-y-4 max-h-[45vh] overflow-y-auto pr-2"></div>
+                            <div id="session-log-list" class="space-y-4 overflow-y-auto pr-2 flex-1"></div>
                         </div>
                     </div>
                 </div>
             </main>
+        </div>
         `;
 
         document.getElementById('log-session-btn').addEventListener('click', () => {
@@ -556,7 +583,7 @@ const renderNotesView = (student) => {
             <h3 class="text-xl font-semibold text-gray-800">Student Notes</h3>
             <button data-action="edit-notes" data-student-id="${student.id}" class="px-3 py-1 bg-sky-500 text-white text-sm rounded-md shadow-sm hover:bg-sky-600 font-semibold">Edit</button>
         </div>
-        <div class="max-h-[45vh] overflow-y-auto pr-2">
+        <div class="overflow-y-auto pr-2 flex-1">
             <div class="prose max-w-none text-gray-800  prose-li:marker:text-gray-700">
                 ${notesHtml}
             </div>
@@ -576,7 +603,7 @@ const renderNotesEditView = (student) => {
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">Editing Notes</h3>
         </div>
-        <textarea id="notes-editor" class="${inputClasses} !mt-0 max-h-[45vh]" rows="10">${currentNotes}</textarea>
+        <textarea id="notes-editor" class="${inputClasses} !mt-0" rows="10 flex-1" >${currentNotes}</textarea>
         <div class="flex justify-end gap-2 mt-4">
              <button data-action="cancel-edit-notes" data-student-id="${student.id}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancel</button>
              <button data-action="save-notes" data-student-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">Save Notes</button>
