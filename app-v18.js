@@ -583,7 +583,7 @@ const renderNotesView = (student) => {
             <h3 class="text-xl font-semibold text-gray-800">Student Notes</h3>
             <button data-action="edit-notes" data-student-id="${student.id}" class="px-3 py-1 bg-sky-500 text-white text-sm rounded-md shadow-sm hover:bg-sky-600 font-semibold">Edit</button>
         </div>
-        <div class="overflow-y-auto pr-2 flex-1">
+        <div class="overflow-y-auto pr-2 flex-1" dir="auto">
             <div class="prose max-w-none text-gray-800  prose-li:marker:text-gray-700">
                 ${notesHtml}
             </div>
@@ -603,7 +603,7 @@ const renderNotesEditView = (student) => {
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-semibold text-gray-800">Editing Notes</h3>
         </div>
-        <textarea id="notes-editor" class="${inputClasses} !mt-0" rows="10 flex-1" >${currentNotes}</textarea>
+        <textarea id="notes-editor" class="${inputClasses} !mt-0" rows="10 flex-1" dir="auto">${currentNotes}</textarea>
         <div class="flex justify-end gap-2 mt-4">
              <button data-action="cancel-edit-notes" data-student-id="${student.id}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancel</button>
              <button data-action="save-notes" data-student-id="${student.id}" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 font-semibold">Save Notes</button>
